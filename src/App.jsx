@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-const RAW_API = import.meta.env.VITE_API_URL || "https://grating-caring-panda.ngrok-free.dev";
+const RAW_API = import.meta.env.VITE_API_URL || "https://api.ssb-rocket.ch";
 const API = RAW_API.endsWith("/api") ? RAW_API : `${RAW_API}/api`;
 const API_BASE = RAW_API.replace(/\/api\/?$/, "");
 
