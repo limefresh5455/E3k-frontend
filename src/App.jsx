@@ -83,6 +83,7 @@ const Icon = {
   Hash:        () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>,
   Folder:      () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>,
   Layers:      () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>,
+  Upload:      () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>,
 };
 
 function useAuth() {
@@ -338,6 +339,113 @@ function SyncPanel({result,onClose}) {
   );
 }
 
+function UploadPdfModal({ onClose, onSuccess }) {
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [result, setResult] = useState(null);
+
+  const handleUpload = async () => {
+    if (!file) { setError("Please choose a PDF file."); return; }
+    setError("");
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch(`${API}/upload`, {
+        method: "POST",
+        body,
+        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Upload failed");
+      setResult(data);
+      if (onSuccess) onSuccess();
+    } catch (err) {
+      setError(err.message || "Upload failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:50,padding:"1rem"}}>
+      <div style={{background:"#fff",borderRadius:"1.25rem",width:"100%",maxWidth:"460px",boxShadow:"0 25px 60px rgba(0,0,0,.25)",display:"flex",flexDirection:"column"}}>
+        <div style={{padding:"1.25rem 1.5rem",borderBottom:"1px solid #f1f5f9",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <h2 style={{margin:0,fontSize:"1.1rem",fontWeight:700,color:"#0f172a"}}>Upload PDF</h2>
+          <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",color:"#94a3b8",width:"28px",height:"28px"}}><Icon.Close /></button>
+        </div>
+
+        <div style={{padding:"1.5rem",display:"flex",flexDirection:"column",gap:"1rem"}}>
+          {!result ? (
+            <>
+              <div
+                style={{border:"2px dashed #e2e8f0",borderRadius:"0.875rem",padding:"2rem",textAlign:"center",background:"#f8fafc",cursor:"pointer"}}
+                onClick={() => document.getElementById("upload-pdf-input").click()}
+              >
+                <div style={{width:"40px",height:"40px",color:"#94a3b8",margin:"0 auto 0.75rem"}}><Icon.Upload /></div>
+                <p style={{fontWeight:600,color:"#374151",margin:"0 0 0.25rem",fontSize:"0.9rem"}}>
+                  {file ? file.name : "Click to choose a PDF"}
+                </p>
+                <p style={{fontSize:"0.75rem",color:"#94a3b8",margin:0}}>
+                  {file ? `${(file.size/1024).toFixed(1)} KB` : "Only .pdf files accepted"}
+                </p>
+                <input
+                  id="upload-pdf-input"
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  style={{display:"none"}}
+                  onChange={e => { setFile(e.target.files?.[0] || null); setError(""); }}
+                />
+              </div>
+
+              {error && (
+                <div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:"0.5rem",padding:"0.625rem 0.875rem",color:"#dc2626",fontSize:"0.85rem"}}>
+                  {error}
+                </div>
+              )}
+
+              <div style={{display:"flex",gap:"0.75rem"}}>
+                <button onClick={onClose} style={{flex:1,background:"none",border:"1.5px solid #e2e8f0",color:"#64748b",borderRadius:"0.625rem",padding:"0.625rem",fontWeight:600,fontSize:"0.875rem",cursor:"pointer"}}>
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpload}
+                  disabled={loading || !file}
+                  style={{flex:2,background:"linear-gradient(135deg,#3b82f6,#1d4ed8)",color:"#fff",border:"none",borderRadius:"0.625rem",padding:"0.625rem",fontWeight:700,fontSize:"0.875rem",cursor:(loading||!file)?"not-allowed":"pointer",opacity:(loading||!file)?0.7:1,display:"flex",alignItems:"center",justifyContent:"center",gap:"0.5rem"}}
+                >
+                  {loading ? <><Spinner size={16} /> Uploading…</> : "Upload PDF"}
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:"0.875rem",padding:"1.25rem",display:"flex",flexDirection:"column",gap:"0.75rem"}}>
+                <div style={{display:"flex",alignItems:"center",gap:"0.5rem",marginBottom:"0.25rem"}}>
+                  <div style={{width:"20px",height:"20px",color:"#16a34a"}}><Icon.CheckCircle /></div>
+                  <span style={{fontWeight:700,color:"#166534",fontSize:"0.95rem"}}>Upload Successful</span>
+                </div>
+                {[
+                  ["ERP Record ID", result.erp_record_id],
+                ].map(([label, val]) => val && (
+                  <div key={label} style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"#fff",borderRadius:"0.5rem",padding:"0.5rem 0.75rem"}}>
+                    <span style={{fontSize:"0.78rem",color:"#64748b",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.04em"}}>{label}</span>
+                    <span style={{fontSize:"0.875rem",fontWeight:700,color:"#0f172a"}}>{val}</span>
+                  </div>
+                ))}
+              </div>
+              <button onClick={onClose} style={{width:"100%",background:"#0f172a",color:"#fff",border:"none",borderRadius:"0.625rem",padding:"0.75rem",fontWeight:700,cursor:"pointer",fontSize:"0.9rem"}}>
+                Close
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function OrderModal({orderId,onClose}) {
   const [order,setOrder]=useState(null);
   const [loading,setLoading]=useState(true);
@@ -440,6 +548,7 @@ function Dashboard({username,onLogout}) {
   const [selectedId,setSelectedId]=useState(null);
   const [search,setSearch]=useState("");
   const [filter,setFilter]=useState("all");
+  const [showUploadModal,setShowUploadModal]=useState(false);
 
   const loadData=useCallback(async()=>{
     setLoading(true);
@@ -476,6 +585,10 @@ function Dashboard({username,onLogout}) {
           </div>
           <div style={{display:"flex",alignItems:"center",gap:"1rem"}}>
             <span style={{fontSize:"0.8125rem",color:"#64748b"}}>Welcome, <strong>{username}</strong></span>
+            <button onClick={()=>setShowUploadModal(true)} style={{display:"flex",alignItems:"center",gap:"0.5rem",background:"linear-gradient(135deg,#3b82f6,#1d4ed8)",border:"none",color:"#fff",borderRadius:"0.625rem",padding:"0.5rem 1rem",fontWeight:700,fontSize:"0.8125rem",cursor:"pointer"}}>
+              <div style={{width:"14px",height:"14px"}}><Icon.Upload /></div>
+              Upload PDF
+            </button>
             <button onClick={handleSync} disabled={syncing} style={{display:"flex",alignItems:"center",gap:"0.5rem",background:syncing?"#93c5fd":"linear-gradient(135deg,#3b82f6,#1d4ed8)",color:"#fff",border:"none",borderRadius:"0.625rem",padding:"0.5rem 1rem",fontWeight:700,fontSize:"0.8125rem",cursor:syncing?"not-allowed":"pointer"}}>
               <div style={{width:"14px",height:"14px",animation:syncing?"spin 0.8s linear infinite":"none"}}><Icon.Refresh /></div>
               {syncing?"Syncing…":"Sync pCloud"}
@@ -535,6 +648,7 @@ function Dashboard({username,onLogout}) {
 
       {syncResult&&<SyncPanel result={syncResult} onClose={()=>setSyncResult(null)} />}
       {selectedId&&<OrderModal orderId={selectedId} onClose={()=>setSelectedId(null)} />}
+      {showUploadModal&&<UploadPdfModal onClose={()=>setShowUploadModal(false)} onSuccess={loadData} />}
     </div>
   );
 }
