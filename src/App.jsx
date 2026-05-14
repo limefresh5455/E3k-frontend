@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-const RAW_API = import.meta.env.VITE_API_URL || "https://api.ssb-rocket.ch";
+const RAW_API = import.meta.env.VITE_API_URL || "https://grating-caring-panda.ngrok-free.dev";
 const API = RAW_API.endsWith("/api") ? RAW_API : `${RAW_API}/api`;
 const API_BASE = RAW_API.replace(/\/api\/?$/, "");
 
@@ -9,6 +9,7 @@ const apiFetch = async (path, options = {}) => {
   const res = await fetch(`${API}${path}`, {
     ...options,
     headers: {
+      "ngrok-skip-browser-warning": "true",
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.headers || {}),
@@ -37,6 +38,7 @@ const uploadMonthlyInvoicePdf = async (file) => {
         method: "POST",
         body,
         headers: {
+          "ngrok-skip-browser-warning": "true",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
@@ -260,6 +262,17 @@ function Spinner({size=32}) {
   return <div style={{width:size,height:size,border:`${size/8}px solid #e2e8f0`,borderTop:`${size/8}px solid #3b82f6`,borderRadius:"50%",animation:"spin 0.8s linear infinite"}} />;
 }
 
+const asNumber = (value) => {
+  if (value === null || value === undefined || value === "") return null;
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  const text = String(value).trim().replace(/\s+/g, "").replace(/'/g, "");
+  const normalized = text.includes(",") && !text.includes(".")
+    ? text.replace(",", ".")
+    : text.replace(/,/g, "");
+  const num = Number(normalized);
+  return Number.isFinite(num) ? num : null;
+};
+
 function OrderCard({order,onClick}) {
   const s=order.summary||{};
   const ok=order.status==="success", fail=order.status==="failure";
@@ -356,7 +369,10 @@ function UploadPdfModal({ onClose, onSuccess }) {
       const res = await fetch(`${API}/upload`, {
         method: "POST",
         body,
-        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        headers: { 
+          "ngrok-skip-browser-warning": "true",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Upload failed");
@@ -488,7 +504,7 @@ function OrderModal({orderId,onClose}) {
                 ))}
               </div>
               {order.pdf_url&&<a href={order.pdf_url} target="_blank" rel="noreferrer" style={{display:"inline-flex",alignItems:"center",gap:"0.5rem",color:"#3b82f6",textDecoration:"none",fontSize:"0.875rem",fontWeight:600}}>
-                <div style={{width:"16px",height:"16px"}}><Icon.ExternalLink /></div>View original PDF on pCloud
+                {/* <div style={{width:"16px",height:"16px"}}><Icon.ExternalLink /></div>View original PDF on pCloud */}
               </a>}
               {lines.length>0&&(
                 <div>
@@ -503,16 +519,21 @@ function OrderModal({orderId,onClose}) {
                         </tr>
                       </thead>
                       <tbody>
-                        {lines.map((line,i)=>(
-                          <tr key={i} style={{background:i%2===0?"#fff":"#fafafa",borderBottom:i<lines.length-1?"1px solid #f1f5f9":"none"}}>
-                            <td style={{padding:"0.625rem 0.875rem",fontFamily:"monospace",color:"#3b82f6",fontSize:"0.75rem"}}>{line.Number}</td>
-                            <td style={{padding:"0.625rem 0.875rem",color:"#374151"}}>{line.Description}</td>
-                            <td style={{padding:"0.625rem 0.875rem",textAlign:"right",fontWeight:600,color:"#0f172a"}}>{line.Quantity}</td>
-                            <td style={{padding:"0.625rem 0.875rem",textAlign:"right",color:"#374151"}}>{line.Price>0?line.Price.toFixed(2):"—"}</td>
-                            <td style={{padding:"0.625rem 0.875rem",textAlign:"right",fontWeight:600,color:"#0f172a"}}>{line.Price>0?(line.Price*line.Quantity).toFixed(2):"—"}</td>
-                            <td style={{padding:"0.625rem 0.875rem",color:"#64748b",fontSize:"0.75rem"}}>{line.DeliveryDate||"—"}</td>
-                          </tr>
-                        ))}
+                        {lines.map((line,i)=>{
+                          const qty = asNumber(line.Quantity) ?? 0;
+                          const unitPrice = asNumber(line.GrossPrice ?? line.Price);
+                          const total = unitPrice !== null ? unitPrice * qty : null;
+                          return (
+                            <tr key={i} style={{background:i%2===0?"#fff":"#fafafa",borderBottom:i<lines.length-1?"1px solid #f1f5f9":"none"}}>
+                              <td style={{padding:"0.625rem 0.875rem",fontFamily:"monospace",color:"#3b82f6",fontSize:"0.75rem"}}>{line.Number}</td>
+                              <td style={{padding:"0.625rem 0.875rem",color:"#374151"}}>{line.Description}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",fontWeight:600,color:"#0f172a"}}>{line.Quantity}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",color:"#374151"}}>{unitPrice !== null ? unitPrice.toFixed(2) : "—"}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",fontWeight:600,color:"#0f172a"}}>{total !== null ? total.toFixed(2) : "—"}</td>
+                              <td style={{padding:"0.625rem 0.875rem",color:"#64748b",fontSize:"0.75rem"}}>{line.DeliveryDate||"—"}</td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -612,7 +633,7 @@ function Dashboard({username,onLogout}) {
           <div style={{position:"relative",flex:"1 1 240px"}}>
             <div style={{position:"absolute",left:"0.75rem",top:"50%",transform:"translateY(-50%)",width:"16px",height:"16px",color:"#94a3b8",pointerEvents:"none"}}><Icon.Search /></div>
             <input type="text" placeholder="Search order #, supplier, file…" value={search} onChange={e=>setSearch(e.target.value)}
-              style={{width:"100%",border:"1.5px solid #e2e8f0",borderRadius:"0.625rem",padding:"0.5625rem 0.875rem 0.5625rem 2.25rem",fontSize:"0.875rem",outline:"none",background:"#fff"}}
+              style={{width:"100%",border:"1.5px solid #e2e8f0",borderRadius:"0.625rem",padding:"0.5625rem 0.875rem 0.5625rem 2.25rem",fontSize:"0.875rem",outline:"none",background:"#fff", color:"#0f172a"}}
               onFocus={e=>e.target.style.borderColor="#3b82f6"} onBlur={e=>e.target.style.borderColor="#e2e8f0"} />
           </div>
           <div style={{display:"flex",gap:"0.375rem",background:"#fff",border:"1.5px solid #e2e8f0",borderRadius:"0.625rem",padding:"0.25rem"}}>
@@ -680,3 +701,4 @@ export default function App() {
   }
   return <Dashboard username={user} onLogout={logout} />;
 }
+
