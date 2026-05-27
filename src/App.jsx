@@ -276,6 +276,17 @@ const asNumber = (value) => {
 function OrderCard({order,onClick}) {
   const s=order.summary||{};
   const needsDoubleCheck = Boolean(s.requires_double_check);
+  const rawAlerts = Array.isArray(s.alerts) ? s.alerts : [];
+  const hasUnit = rawAlerts.some(a => a?.type === "unit_factor");
+  const hasDelivery = rawAlerts.some(a => a?.type === "delivery_date_gt_one_week");
+  const normalizedAlerts = hasDelivery && !hasUnit
+    ? [{ type: "unit_factor", message: "Double-check required: Unit price conversion." }, ...rawAlerts]
+    : rawAlerts;
+  const summaryAlerts = [
+    ...normalizedAlerts.filter(a => a?.type === "unit_factor"),
+    ...normalizedAlerts.filter(a => a?.type === "delivery_date_gt_one_week"),
+    ...normalizedAlerts.filter(a => a?.type !== "unit_factor" && a?.type !== "delivery_date_gt_one_week"),
+  ];
   const ok=order.status==="success", fail=order.status==="failure";
   return (
     <div onClick={onClick} style={{background:"#fff",borderRadius:"1rem",border:`1.5px solid ${fail?"#fecaca":"#f1f5f9"}`,boxShadow:"0 1px 3px rgba(0,0,0,.06)",cursor:"pointer",padding:"1.25rem",transition:"all .15s",position:"relative",overflow:"hidden"}}
@@ -302,7 +313,11 @@ function OrderCard({order,onClick}) {
         <span style={{fontSize:"0.8125rem",color:"#475569"}}>{s.line_count} line{s.line_count!==1?"s":""} &nbsp;·&nbsp; {s.currency} {s.total_net?.toFixed(2)}</span>
       </div>}
       {ok&&needsDoubleCheck&&<div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:"0.5rem",padding:"0.5rem 0.625rem",marginTop:"0.5rem"}}>
-        <p style={{fontSize:"0.75rem",color:"#92400e",margin:0,fontWeight:700}}>Double-check required: Einheit/unit-factor pricing detected.</p>
+        {(summaryAlerts.length ? summaryAlerts : [{ message: "Double-check required." }]).map((a, i) => (
+          <p key={i} style={{fontSize:"0.75rem",color:"#92400e",margin:i===0?0:"0.25rem 0 0",fontWeight:700}}>
+            {`${i + 1}. ${a?.message || "Double-check required."}`}
+          </p>
+        ))}
       </div>}
       {fail&&<div style={{background:"#fef2f2",borderRadius:"0.5rem",padding:"0.5rem 0.625rem",marginTop:"0.5rem"}}>
         <p style={{fontSize:"0.75rem",color:"#dc2626",margin:0,overflow:"hidden",textOverflow:"ellipsis",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{order.error_message}</p>
@@ -476,7 +491,17 @@ function OrderModal({orderId,onClose}) {
   if(!orderId)return null;
   const ext=order?.extracted_json;
   const lines=ext?.VoucherLines||[];
-  const alerts=order?.summary?.alerts||[];
+  const rawAlerts=order?.summary?.alerts||[];
+  const hasUnitAlert = rawAlerts.some(a => a?.type === "unit_factor");
+  const hasDeliveryAlert = rawAlerts.some(a => a?.type === "delivery_date_gt_one_week");
+  const normalizedAlerts = hasDeliveryAlert && !hasUnitAlert
+    ? [{ type: "unit_factor", message: "Double-check required: Unit price conversion." }, ...rawAlerts]
+    : rawAlerts;
+  const alerts = [
+    ...normalizedAlerts.filter(a => a?.type === "unit_factor"),
+    ...normalizedAlerts.filter(a => a?.type === "delivery_date_gt_one_week"),
+    ...normalizedAlerts.filter(a => a?.type !== "unit_factor" && a?.type !== "delivery_date_gt_one_week"),
+  ];
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:50,padding:"1rem"}}>
       <div style={{background:"#fff",borderRadius:"1.25rem",width:"100%",maxWidth:"820px",maxHeight:"92vh",display:"flex",flexDirection:"column",boxShadow:"0 25px 60px rgba(0,0,0,.25)"}}>
@@ -559,10 +584,40 @@ function OrderModal({orderId,onClose}) {
               )}
               {alerts.length>0&&(
                 <div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:"0.875rem",padding:"1rem"}}>
-                  <p style={{fontWeight:700,color:"#92400e",fontSize:"0.82rem",margin:"0 0 0.5rem"}}>Alert: Double-check Einheit/unit-factor conversion</p>
-                  <div style={{display:"flex",flexDirection:"column",gap:"0.35rem"}}>
+                  <div style={{display:"flex",flexDirection:"column",gap:"0.6rem"}}>
                     {alerts.map((a,i)=>(
-                      <p key={i} style={{margin:0,fontSize:"0.8rem",color:"#78350f"}}>{`Article ${a.article_number||"?"}: factor ${a.factor}, base ${a.base_unit_price} -> ERP ${a.erp_unit_price}`}</p>
+                      <div key={i}>
+                        <p style={{fontWeight:700,color:"#92400e",fontSize:"0.82rem",margin:"0 0 0.35rem"}}>{`${i + 1}. ${a?.message || "Double-check required."}`}</p>
+                        {Array.isArray(a?.lines) && a.lines.length > 0 && (
+                          <div style={{display:"flex",flexDirection:"column",gap:"0.25rem"}}>
+                            {a.lines.map((ln,j)=>(
+                              <p key={`${i}-${j}`} style={{margin:0,fontSize:"0.8rem",color:"#78350f"}}>
+                                {a.type==="unit_factor"
+                                  ? (() => {
+                                      const article = ln.article_number || "?";
+                                      const factor = ln.factor ?? null;
+                                      const base = ln.base_unit_price ?? null;
+                                      const erp = ln.erp_unit_price ?? null;
+                                      if (factor === null || base === null || erp === null) {
+                                        return `Article ${article}: Einheit/unit-factor pricing detected. Please verify unit price manually.`;
+                                      }
+                                      return `Article ${article}: factor ${factor}, base ${base} -> ERP ${erp}`;
+                                    })()
+                                  : a.type==="delivery_date_gt_one_week"
+                                    ? (() => {
+                                        const article = ln.article_number || "?";
+                                        const orderDate = ln.order_date || "not found";
+                                        const deliveryDate = ln.delivery_date || "not found";
+                                        const days = ln.days_after_order;
+                                        const daysText = Number.isFinite(days) ? `${days} days` : "more than one week";
+                                        return `Article ${article}: order ${orderDate}, delivery ${deliveryDate} (${daysText})`;
+                                      })()
+                                    : JSON.stringify(ln)}
+                              </p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 </div>
