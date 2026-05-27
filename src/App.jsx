@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-const RAW_API = import.meta.env.VITE_API_URL || "https://grating-caring-panda.ngrok-free.dev";
+const RAW_API = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 const API = RAW_API.endsWith("/api") ? RAW_API : `${RAW_API}/api`;
 const API_BASE = RAW_API.replace(/\/api\/?$/, "");
 
@@ -275,6 +275,7 @@ const asNumber = (value) => {
 
 function OrderCard({order,onClick}) {
   const s=order.summary||{};
+  const needsDoubleCheck = Boolean(s.requires_double_check);
   const ok=order.status==="success", fail=order.status==="failure";
   return (
     <div onClick={onClick} style={{background:"#fff",borderRadius:"1rem",border:`1.5px solid ${fail?"#fecaca":"#f1f5f9"}`,boxShadow:"0 1px 3px rgba(0,0,0,.06)",cursor:"pointer",padding:"1.25rem",transition:"all .15s",position:"relative",overflow:"hidden"}}
@@ -299,6 +300,9 @@ function OrderCard({order,onClick}) {
       {ok&&s.line_count>0&&<div style={{display:"flex",alignItems:"center",gap:"0.5rem",marginBottom:"0.5rem"}}>
         <div style={{width:"14px",height:"14px",color:"#94a3b8",flexShrink:0}}><Icon.Hash /></div>
         <span style={{fontSize:"0.8125rem",color:"#475569"}}>{s.line_count} line{s.line_count!==1?"s":""} &nbsp;·&nbsp; {s.currency} {s.total_net?.toFixed(2)}</span>
+      </div>}
+      {ok&&needsDoubleCheck&&<div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:"0.5rem",padding:"0.5rem 0.625rem",marginTop:"0.5rem"}}>
+        <p style={{fontSize:"0.75rem",color:"#92400e",margin:0,fontWeight:700}}>Double-check required: Einheit/unit-factor pricing detected.</p>
       </div>}
       {fail&&<div style={{background:"#fef2f2",borderRadius:"0.5rem",padding:"0.5rem 0.625rem",marginTop:"0.5rem"}}>
         <p style={{fontSize:"0.75rem",color:"#dc2626",margin:0,overflow:"hidden",textOverflow:"ellipsis",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{order.error_message}</p>
@@ -472,6 +476,7 @@ function OrderModal({orderId,onClose}) {
   if(!orderId)return null;
   const ext=order?.extracted_json;
   const lines=ext?.VoucherLines||[];
+  const alerts=order?.summary?.alerts||[];
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:50,padding:"1rem"}}>
       <div style={{background:"#fff",borderRadius:"1.25rem",width:"100%",maxWidth:"820px",maxHeight:"92vh",display:"flex",flexDirection:"column",boxShadow:"0 25px 60px rgba(0,0,0,.25)"}}>
@@ -548,6 +553,16 @@ function OrderModal({orderId,onClose}) {
                         <span style={{color:"#3b82f6"}}>{k}</span>
                         <span style={{fontWeight:600,color:"#1e3a8a"}}>{v}</span>
                       </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {alerts.length>0&&(
+                <div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:"0.875rem",padding:"1rem"}}>
+                  <p style={{fontWeight:700,color:"#92400e",fontSize:"0.82rem",margin:"0 0 0.5rem"}}>Alert: Double-check Einheit/unit-factor conversion</p>
+                  <div style={{display:"flex",flexDirection:"column",gap:"0.35rem"}}>
+                    {alerts.map((a,i)=>(
+                      <p key={i} style={{margin:0,fontSize:"0.8rem",color:"#78350f"}}>{`Article ${a.article_number||"?"}: factor ${a.factor}, base ${a.base_unit_price} -> ERP ${a.erp_unit_price}`}</p>
                     ))}
                   </div>
                 </div>
