@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-const RAW_API = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+const RAW_API = import.meta.env.VITE_API_URL || "https://api.ssb-rocket.ch";
 const API = RAW_API.endsWith("/api") ? RAW_API : `${RAW_API}/api`;
 const API_BASE = RAW_API.replace(/\/api\/?$/, "");
 
@@ -504,7 +504,7 @@ function OrderModal({orderId,onClose}) {
   ];
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:50,padding:"1rem"}}>
-      <div style={{background:"#fff",borderRadius:"1.25rem",width:"100%",maxWidth:"820px",maxHeight:"92vh",display:"flex",flexDirection:"column",boxShadow:"0 25px 60px rgba(0,0,0,.25)"}}>
+      <div style={{background:"#fff",borderRadius:"1.25rem",width:"100%",maxWidth:"1080px",maxHeight:"92vh",display:"flex",flexDirection:"column",boxShadow:"0 25px 60px rgba(0,0,0,.25)"}}>
         <div style={{padding:"1.25rem 1.5rem",borderBottom:"1px solid #f1f5f9",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <div>
             <div style={{display:"flex",alignItems:"center",gap:"0.75rem"}}>
@@ -539,12 +539,12 @@ function OrderModal({orderId,onClose}) {
               {lines.length>0&&(
                 <div>
                   <p style={{fontWeight:700,color:"#0f172a",margin:"0 0 0.75rem",fontSize:"0.9375rem"}}>Order Lines <span style={{color:"#94a3b8",fontWeight:400}}>({lines.length})</span></p>
-                  <div style={{border:"1px solid #e2e8f0",borderRadius:"0.875rem",overflow:"hidden"}}>
-                    <table style={{width:"100%",borderCollapse:"collapse",fontSize:"0.8125rem"}}>
+                  <div style={{border:"1px solid #e2e8f0",borderRadius:"0.875rem",overflowX:"auto"}}>
+                    <table style={{width:"100%",minWidth:"820px",borderCollapse:"collapse",fontSize:"0.8125rem"}}>
                       <thead>
                         <tr style={{background:"#f8fafc"}}>
-                          {["Article #","Description","Qty","Unit Price","Total","Delivery"].map(h=>(
-                            <th key={h} style={{padding:"0.625rem 0.875rem",textAlign:["Qty","Unit Price","Total"].includes(h)?"right":"left",fontSize:"0.7rem",fontWeight:700,color:"#64748b",textTransform:"uppercase",letterSpacing:"0.05em",borderBottom:"1px solid #e2e8f0"}}>{h}</th>
+                          {["Artikelnummer","Bezeichnung","Menge","Preis","Einheit","Rab %","Betrag","Delivery" ].map(h=>(
+                            <th key={h} style={{padding:"0.625rem 0.875rem",textAlign:["Qty","Unit Price","Einheit","Rab %","Total"].includes(h)?"right":"left",fontSize:"0.7rem",fontWeight:700,color:"#64748b",textTransform:"uppercase",letterSpacing:"0.05em",borderBottom:"1px solid #e2e8f0",whiteSpace:"nowrap"}}>{h}</th>
                           ))}
                         </tr>
                       </thead>
@@ -555,12 +555,14 @@ function OrderModal({orderId,onClose}) {
                           const total = unitPrice !== null ? unitPrice * qty : null;
                           return (
                             <tr key={i} style={{background:i%2===0?"#fff":"#fafafa",borderBottom:i<lines.length-1?"1px solid #f1f5f9":"none"}}>
-                              <td style={{padding:"0.625rem 0.875rem",fontFamily:"monospace",color:"#3b82f6",fontSize:"0.75rem"}}>{line.Number}</td>
-                              <td style={{padding:"0.625rem 0.875rem",color:"#374151"}}>{line.Description}</td>
-                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",fontWeight:600,color:"#0f172a"}}>{line.Quantity}</td>
-                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",color:"#374151"}}>{unitPrice !== null ? unitPrice.toFixed(2) : "—"}</td>
-                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",fontWeight:600,color:"#0f172a"}}>{total !== null ? total.toFixed(2) : "—"}</td>
-                              <td style={{padding:"0.625rem 0.875rem",color:"#64748b",fontSize:"0.75rem"}}>{line.DeliveryDate||"—"}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"left",fontFamily:"monospace",color:"#3b82f6",fontSize:"0.75rem",whiteSpace:"nowrap"}}>{line.Number}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"left",color:"#374151"}}>{line.Description}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",fontWeight:600,color:"#0f172a",whiteSpace:"nowrap"}}>{line.Quantity}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",color:"#374151",whiteSpace:"nowrap"}}>{unitPrice !== null ? unitPrice.toFixed(2) : "—"}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",color:"#374151",whiteSpace:"nowrap"}}>{line.Einheit !== undefined && line.Einheit !== null ? line.Einheit : "—"}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",color:"#374151",whiteSpace:"nowrap"}}>{line.DiscountPercent !== undefined && line.DiscountPercent !== null ? `${line.DiscountPercent}%` : "—"}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",fontWeight:600,color:"#0f172a",whiteSpace:"nowrap"}}>{total !== null ? total.toFixed(2) : "—"}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"left",color:"#64748b",fontSize:"0.75rem",whiteSpace:"nowrap"}}>{line.DeliveryDate||"—"}</td>
                             </tr>
                           );
                         })}
@@ -580,7 +582,7 @@ function OrderModal({orderId,onClose}) {
                       </div>
                     ))}
                   </div>
-                </div>
+                </div>  
               )}
               {alerts.length>0&&(
                 <div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:"0.875rem",padding:"1rem"}}>
