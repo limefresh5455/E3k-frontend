@@ -540,11 +540,11 @@ function OrderModal({orderId,onClose}) {
                 <div>
                   <p style={{fontWeight:700,color:"#0f172a",margin:"0 0 0.75rem",fontSize:"0.9375rem"}}>Order Lines <span style={{color:"#94a3b8",fontWeight:400}}>({lines.length})</span></p>
                   <div style={{border:"1px solid #e2e8f0",borderRadius:"0.875rem",overflowX:"auto"}}>
-                    <table style={{width:"100%",minWidth:"820px",borderCollapse:"collapse",fontSize:"0.8125rem"}}>
+                    <table style={{width:"100%",minWidth:"900px",borderCollapse:"collapse",fontSize:"0.8125rem"}}>
                       <thead>
                         <tr style={{background:"#f8fafc"}}>
-                          {["Artikelnummer","Bezeichnung","Menge","Preis","Einheit","Rab %","Betrag","Delivery" ].map(h=>(
-                            <th key={h} style={{padding:"0.625rem 0.875rem",textAlign:["Qty","Unit Price","Einheit","Rab %","Total"].includes(h)?"right":"left",fontSize:"0.7rem",fontWeight:700,color:"#64748b",textTransform:"uppercase",letterSpacing:"0.05em",borderBottom:"1px solid #e2e8f0",whiteSpace:"nowrap"}}>{h}</th>
+                          {["Artikelnummer","Bezeichnung","Menge","Preis","Einheit","Rab %","Rabattpreis","Betrag","Delivery" ].map(h=>(
+                            <th key={h} style={{padding:"0.625rem 0.875rem",textAlign:["Menge","Preis","Einheit","Rab %","Preis ohne Rabatt","Betrag"].includes(h)?"right":"left",fontSize:"0.7rem",fontWeight:700,color:"#64748b",textTransform:"uppercase",letterSpacing:"0.05em",borderBottom:"1px solid #e2e8f0",whiteSpace:"nowrap"}}>{h}</th>
                           ))}
                         </tr>
                       </thead>
@@ -552,7 +552,8 @@ function OrderModal({orderId,onClose}) {
                         {lines.map((line,i)=>{
                           const qty = asNumber(line.Quantity) ?? 0;
                           const unitPrice = asNumber(line.GrossPrice ?? line.Price);
-                          const total = unitPrice !== null ? unitPrice * qty : null;
+                          const netUnitPrice = unitPrice !== null ? unitPrice * (1 - (line.DiscountPercent ?? 0) / 100) : null;
+                          const total = netUnitPrice !== null ? netUnitPrice * qty : null;
                           return (
                             <tr key={i} style={{background:i%2===0?"#fff":"#fafafa",borderBottom:i<lines.length-1?"1px solid #f1f5f9":"none"}}>
                               <td style={{padding:"0.625rem 0.875rem",textAlign:"left",fontFamily:"monospace",color:"#3b82f6",fontSize:"0.75rem",whiteSpace:"nowrap"}}>{line.Number}</td>
@@ -561,6 +562,7 @@ function OrderModal({orderId,onClose}) {
                               <td style={{padding:"0.625rem 0.875rem",textAlign:"right",color:"#374151",whiteSpace:"nowrap"}}>{unitPrice !== null ? unitPrice.toFixed(2) : "—"}</td>
                               <td style={{padding:"0.625rem 0.875rem",textAlign:"right",color:"#374151",whiteSpace:"nowrap"}}>{line.Einheit !== undefined && line.Einheit !== null ? line.Einheit : "—"}</td>
                               <td style={{padding:"0.625rem 0.875rem",textAlign:"right",color:"#374151",whiteSpace:"nowrap"}}>{line.DiscountPercent !== undefined && line.DiscountPercent !== null ? `${line.DiscountPercent}%` : "—"}</td>
+                              <td style={{padding:"0.625rem 0.875rem",textAlign:"right",color:"#374151",whiteSpace:"nowrap"}}>{netUnitPrice !== null ? netUnitPrice.toFixed(2) : "—"}</td>
                               <td style={{padding:"0.625rem 0.875rem",textAlign:"right",fontWeight:600,color:"#0f172a",whiteSpace:"nowrap"}}>{total !== null ? total.toFixed(2) : "—"}</td>
                               <td style={{padding:"0.625rem 0.875rem",textAlign:"left",color:"#64748b",fontSize:"0.75rem",whiteSpace:"nowrap"}}>{line.DeliveryDate||"—"}</td>
                             </tr>
