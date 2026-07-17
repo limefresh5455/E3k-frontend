@@ -1,0 +1,31 @@
+.public-tabs-container {
+  display: flex;
+  gap: 0.375rem;
+  background: #f1f5f9;
+  border-radius: 0.625rem;
+  padding: 0.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.public-tabs-btn {
+  flex: 1;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.public-tabs-btn-active {
+  background: #0f172a;
+  color: #fff;
+}
+
+.public-tabs-btn-inactive {
+  background: transparent;
+  color: #64748b;
+}

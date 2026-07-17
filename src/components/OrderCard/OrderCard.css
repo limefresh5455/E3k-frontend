@@ -1,0 +1,193 @@
+.order-card {
+  background: #fff;
+  border-radius: 1rem;
+  border: 1.5px solid #f1f5f9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  padding: 1.25rem;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.order-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.order-card.order-card-success {
+  border-color: #bbf7d0;
+}
+
+.order-card.order-card-fail {
+  border-color: #fecaca;
+}
+
+.order-card.order-card-attention {
+  border-color: #f59e0b;
+}
+
+.order-card-badge-container {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.order-card-status-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 1rem 1rem 0 0;
+}
+
+.order-card-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.875rem;
+}
+
+.order-card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+  width: 100%;
+}
+
+.order-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.order-card-filename {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0.125rem 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.order-card-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.order-card-icon {
+  width: 14px;
+  height: 14px;
+  color: #94a3b8;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-card-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.order-card-text {
+  font-size: 0.8125rem;
+  color: #475569;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.order-card-check-box {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.875rem;
+}
+
+.order-card-check-item {
+  font-size: 0.75rem;
+  color: #92400e;
+  font-weight: 700;
+}
+
+.order-card-error-box {
+  background: #fef2f2;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.875rem;
+}
+
+.order-card-error-text {
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.order-card-footer {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-card-folder-group {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.order-card-folder-icon {
+  width: 12px;
+  height: 12px;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.order-card-folder-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.order-card-folder-name {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.order-card-date {
+  font-size: 0.7rem;
+  color: #cbd5e1;
+}
+
+@media (max-width: 480px) {
+  .order-card {
+    padding: 1rem;
+  }
+}

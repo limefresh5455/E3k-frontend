@@ -1,0 +1,81 @@
+.badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  display: inline-block;
+  border: 1px solid transparent;
+}
+
+.badge-success {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.badge-failure {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.badge-pending {
+  background: #fef9c3;
+  color: #ca8a04;
+}
+
+.badge-skipped {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.badge-attention {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-container .tooltip-text {
+  visibility: hidden;
+  width: 260px;
+  background-color: #fffbeb;
+  color: #92400e;
+  text-align: left;
+  border: 1px solid #f59e0b;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: normal;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  position: absolute;
+  z-index: 100;
+  top: 125%;
+  right: 0;
+
+  opacity: 0;
+  transition:
+    opacity 0.15s,
+    visibility 0.15s;
+}
+
+.tooltip-container .tooltip-text::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  right: 15px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #f59e0b transparent;
+}
+
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}

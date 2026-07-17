@@ -1,0 +1,63 @@
+.stat-card-container {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+  border: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-card-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-card-icon-inner {
+  width: 22px;
+  height: 22px;
+}
+
+.stat-card-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.stat-card-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0.125rem 0 0;
+  line-height: 1;
+}
+
+@media (max-width: 480px) {
+  .stat-card-container {
+    padding: 0.875rem 1rem;
+    gap: 0.75rem;
+  }
+  .stat-card-icon-wrapper {
+    width: 36px;
+    height: 36px;
+  }
+  .stat-card-icon-inner {
+    width: 18px;
+    height: 18px;
+  }
+  .stat-card-value {
+    font-size: 1.35rem;
+  }
+  .stat-card-label {
+    font-size: 0.65rem;
+  }
+}

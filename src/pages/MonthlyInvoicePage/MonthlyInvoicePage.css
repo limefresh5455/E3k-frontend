@@ -1,0 +1,91 @@
+.invoice-page-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.invoice-card {
+  background: #fff;
+  border-radius: 1.25rem;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+  width: 100%;
+  max-width: 560px;
+  padding: 2rem;
+}
+
+.invoice-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.invoice-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.invoice-subtitle {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin-top: 0.35rem;
+}
+
+.invoice-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.invoice-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.invoice-file-input {
+  border: 1.5px solid #e2e8f0;
+  border-radius: 0.625rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.9rem;
+  background: #fff;
+  outline: none;
+}
+
+.invoice-error-msg {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  color: #dc2626;
+  font-size: 0.85rem;
+}
+
+.invoice-success-msg {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  color: #166534;
+  font-size: 0.85rem;
+}
+
+.invoice-submit-btn {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #fff;
+  border: none;
+  border-radius: 0.625rem;
+  padding: 0.75rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  margin-top: 0.25rem;
+}
+
+.invoice-submit-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
