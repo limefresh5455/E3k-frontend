@@ -436,7 +436,7 @@ export function OrderModal({ orderId, onClose }) {
       ? [
           {
             type: "unit_factor",
-            message: "Double-check required: Unit price conversion.",
+            message: "Erneute Überprüfung erforderlich: Unit price conversion.",
           },
           ...rawAlerts,
         ]
@@ -809,7 +809,7 @@ export function OrderModal({ orderId, onClose }) {
                       {alerts.map((a, i) => (
                         <div key={i}>
                           <p className="order-modal-alert-item-title">
-                            {`${i + 1}. ${a?.message || "Double-check required."}`}
+                            {`${i + 1}. ${a?.message || "Erneute Überprüfung erforderlich."}`}
                           </p>
                           {Array.isArray(a?.lines) && a.lines.length > 0 && (
                             <div className="order-modal-alert-lines-list">

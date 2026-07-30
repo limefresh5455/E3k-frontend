@@ -17,7 +17,7 @@ export function OrderCard({ order, onClick }) {
       ? [
           {
             type: "unit_factor",
-            message: "Double-check required: Unit price conversion.",
+            message: "Erneute Überprüfung erforderlich: Unit price conversion.",
           },
           ...rawAlerts,
         ]
@@ -101,14 +101,14 @@ export function OrderCard({ order, onClick }) {
         <div className="order-card-check-box">
           {(summaryAlerts.length
             ? summaryAlerts
-            : [{ message: "Double-check required." }]
+            : [{ message: "Erneute Überprüfung erforderlich." }]
           ).map((a, i) => (
             <p
               key={i}
               className="order-card-check-item"
               style={{ marginTop: i === 0 ? 0 : "0.25rem" }}
             >
-              {`${i + 1}. ${a?.message || "Double-check required."}`}
+              {`${i + 1}. ${a?.message || "Erneute Überprüfung erforderlich."}`}
             </p>
           ))}
         </div>
