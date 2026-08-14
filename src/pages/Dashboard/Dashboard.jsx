@@ -7,6 +7,7 @@ import {
   SyncPanel,
   UploadPdfModal,
   OrderModal,
+  SuppliersModal,
 } from "../../components";
 import { getOrders, getStats, syncPCloud } from "../../services";
 import "./Dashboard.css";
@@ -21,6 +22,7 @@ export function Dashboard({ username, onLogout }) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showSuppliersModal, setShowSuppliersModal] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -81,6 +83,19 @@ export function Dashboard({ username, onLogout }) {
             <span className="dashboard-welcome">
               Welcome, <strong>{username}</strong>
             </span>
+            <button
+              onClick={() => setShowSuppliersModal(true)}
+              className="dashboard-upload-btn"
+              style={{
+                background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+              }}
+            >
+              <div style={{ width: "14px", height: "14px" }}>
+                <Icon.Building />
+              </div>
+              Suppliers
+            </button>
+
             <button
               onClick={() => setShowUploadModal(true)}
               className="dashboard-upload-btn"
@@ -253,6 +268,9 @@ export function Dashboard({ username, onLogout }) {
           onClose={() => setShowUploadModal(false)}
           onSuccess={loadData}
         />
+      )}
+      {showSuppliersModal && (
+        <SuppliersModal onClose={() => setShowSuppliersModal(false)} />
       )}
     </div>
   );
