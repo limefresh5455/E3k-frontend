@@ -35,3 +35,18 @@ export const updateSupplier = async (supplierNumber, payload) => {
     throw error;
   }
 };
+
+export const uploadExcelSuppliers = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const data = await client.post("/suppliers/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

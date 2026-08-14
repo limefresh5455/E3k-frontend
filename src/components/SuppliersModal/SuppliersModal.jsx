@@ -4,6 +4,7 @@ import Spinner from "../Spinner/Spinner";
 import { getSuppliers } from "../../services";
 import CreateSupplierModal from "../CreateSupplierModal/CreateSupplierModal";
 import SupplierDetailModal from "../SupplierDetailModal/SupplierDetailModal";
+import UploadExcelModal from "../UploadExcelModal/UploadExcelModal";
 import "./SuppliersModal.css";
 
 export function SuppliersModal({ onClose }) {
@@ -11,6 +12,7 @@ export function SuppliersModal({ onClose }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showUploadExcelModal, setShowUploadExcelModal] = useState(false);
   const [selectedSupplierNumber, setSelectedSupplierNumber] = useState(null);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -111,28 +113,52 @@ export function SuppliersModal({ onClose }) {
                     width: "300px",
                   }}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(true)}
-                  style={{
-                    background: "#3b82f6",
-                    color: "#fff",
-                    border: "1px solid #2563eb",
-                    borderRadius: "0.375rem",
-                    padding: "0.375rem 0.75rem",
-                    fontWeight: 600,
-                    fontSize: "0.75rem",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.375rem",
-                  }}
-                >
-                  <div style={{ width: "12px", height: "12px" }}>
-                    <Icon.Building />
-                  </div>
-                  Add Supplier
-                </button>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowUploadExcelModal(true)}
+                    style={{
+                      background: "#fff",
+                      color: "#0f172a",
+                      border: "1px solid #cbd5e1",
+                      borderRadius: "0.375rem",
+                      padding: "0.375rem 0.75rem",
+                      fontWeight: 600,
+                      fontSize: "0.75rem",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.375rem",
+                    }}
+                  >
+                    <div style={{ width: "12px", height: "12px", display: "flex", alignItems: "center" }}>
+                      <Icon.Upload />
+                    </div>
+                    Upload Excel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateModal(true)}
+                    style={{
+                      background: "#3b82f6",
+                      color: "#fff",
+                      border: "1px solid #2563eb",
+                      borderRadius: "0.375rem",
+                      padding: "0.375rem 0.75rem",
+                      fontWeight: 600,
+                      fontSize: "0.75rem",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.375rem",
+                    }}
+                  >
+                    <div style={{ width: "12px", height: "12px" }}>
+                      <Icon.Building />
+                    </div>
+                    Add Supplier
+                  </button>
+                </div>
               </div>
 
               {filteredSuppliers.length === 0 && !error ? (
@@ -192,36 +218,36 @@ export function SuppliersModal({ onClose }) {
                               {isStr
                                 ? supplier
                                 : supplier.name ||
-                                  supplier.supplier_name ||
-                                  "Unknown"}
+                                supplier.supplier_name ||
+                                "Unknown"}
                             </td>
                             <td className="suppliers-td suppliers-td-center">
                               {isStr
                                 ? "-"
                                 : supplier.code_1 || (
-                                    <span className="text-muted">-</span>
-                                  )}
+                                  <span className="text-muted">-</span>
+                                )}
                             </td>
                             <td className="suppliers-td suppliers-td-center">
                               {isStr
                                 ? "-"
                                 : supplier.code_2 || (
-                                    <span className="text-muted">-</span>
-                                  )}
+                                  <span className="text-muted">-</span>
+                                )}
                             </td>
                             <td className="suppliers-td suppliers-td-center">
                               {isStr
                                 ? "-"
                                 : supplier.code_3 || (
-                                    <span className="text-muted">-</span>
-                                  )}
+                                  <span className="text-muted">-</span>
+                                )}
                             </td>
                             <td className="suppliers-td suppliers-td-center">
                               {isStr
                                 ? "-"
                                 : supplier.code_4 || (
-                                    <span className="text-muted">-</span>
-                                  )}
+                                  <span className="text-muted">-</span>
+                                )}
                             </td>
                             <td className="suppliers-td suppliers-td-center">
                               {isStr ? "-" : supplier.address_count || 0}
@@ -230,8 +256,8 @@ export function SuppliersModal({ onClose }) {
                               {isStr || !supplier.updated_at
                                 ? "-"
                                 : new Date(
-                                    supplier.updated_at,
-                                  ).toLocaleDateString()}
+                                  supplier.updated_at,
+                                ).toLocaleDateString()}
                             </td>
                           </tr>
                         );
@@ -300,6 +326,15 @@ export function SuppliersModal({ onClose }) {
             </>
           )}
         </div>
+        {showUploadExcelModal && (
+          <UploadExcelModal
+            onClose={() => setShowUploadExcelModal(false)}
+            onSuccess={() => {
+              setShowUploadExcelModal(false);
+              fetchSuppliers();
+            }}
+          />
+        )}
         {showCreateModal && (
           <CreateSupplierModal
             onClose={() => setShowCreateModal(false)}

@@ -10,3 +10,4 @@ export { default as OrderModal } from "./OrderModal/OrderModal";
 export { default as SuppliersModal } from "./SuppliersModal/SuppliersModal";
 export { default as CreateSupplierModal } from "./CreateSupplierModal/CreateSupplierModal";
 export { default as SupplierDetailModal } from "./SupplierDetailModal/SupplierDetailModal";
+export { default as UploadExcelModal } from "./UploadExcelModal/UploadExcelModal";
