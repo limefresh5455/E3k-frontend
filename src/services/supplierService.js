@@ -50,3 +50,14 @@ export const uploadExcelSuppliers = async (file) => {
     throw error;
   }
 };
+
+export const downloadExcelSuppliers = async () => {
+  try {
+    const data = await client.get("/suppliers/download", {
+      responseType: "blob",
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

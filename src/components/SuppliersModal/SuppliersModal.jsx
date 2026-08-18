@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Icon from "../Icon/Icon";
 import Spinner from "../Spinner/Spinner";
-import { getSuppliers } from "../../services";
+import { getSuppliers, downloadExcelSuppliers } from "../../services";
 import CreateSupplierModal from "../CreateSupplierModal/CreateSupplierModal";
 import SupplierDetailModal from "../SupplierDetailModal/SupplierDetailModal";
 import UploadExcelModal from "../UploadExcelModal/UploadExcelModal";
@@ -18,6 +18,22 @@ export function SuppliersModal({ onClose }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 20;
+
+  const handleDownloadExcel = async () => {
+    try {
+      const blob = await downloadExcelSuppliers();
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "suppliers.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError("Failed to download excel.");
+    }
+  };
 
   const fetchSuppliers = async () => {
     setLoading(true);
@@ -94,6 +110,8 @@ export function SuppliersModal({ onClose }) {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  flexWrap: "wrap",
+                  gap: "1rem",
                   marginBottom: "1rem",
                 }}
               >
@@ -110,10 +128,34 @@ export function SuppliersModal({ onClose }) {
                     background: "#fff",
                     fontSize: "0.85rem",
                     outline: "none",
-                    width: "300px",
+                    flex: "1 1 200px",
+                    maxWidth: "300px",
                   }}
                 />
-                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={handleDownloadExcel}
+                    style={{
+                      background: "#fff",
+                      color: "#0f172a",
+                      border: "1px solid #cbd5e1",
+                      borderRadius: "0.375rem",
+                      padding: "0.375rem 0.75rem",
+                      fontWeight: 600,
+                      fontSize: "0.75rem",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.375rem",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <div style={{ width: "12px", height: "12px", display: "flex", alignItems: "center" }}>
+                      <Icon.Download />
+                    </div>
+                    Download Excel
+                  </button>
                   <button
                     type="button"
                     onClick={() => setShowUploadExcelModal(true)}
@@ -129,6 +171,7 @@ export function SuppliersModal({ onClose }) {
                       display: "flex",
                       alignItems: "center",
                       gap: "0.375rem",
+                      whiteSpace: "nowrap",
                     }}
                   >
                     <div style={{ width: "12px", height: "12px", display: "flex", alignItems: "center" }}>
@@ -151,6 +194,7 @@ export function SuppliersModal({ onClose }) {
                       display: "flex",
                       alignItems: "center",
                       gap: "0.375rem",
+                      whiteSpace: "nowrap",
                     }}
                   >
                     <div style={{ width: "12px", height: "12px" }}>

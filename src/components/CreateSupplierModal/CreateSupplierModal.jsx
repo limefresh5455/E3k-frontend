@@ -96,7 +96,9 @@ export function CreateSupplierModal({ onClose, onSuccess }) {
             <h3 className="create-supplier-section-title">General Info</h3>
             <div className="create-supplier-form-grid">
               <div className="create-supplier-form-group">
-                <label className="create-supplier-label">Name *</label>
+                <label className="create-supplier-label">
+                  Name<span style={{ color: "red" }}>*</span>
+                </label>
                 <input
                   name="name"
                   value={formData.name}
@@ -107,12 +109,15 @@ export function CreateSupplierModal({ onClose, onSuccess }) {
                 />
               </div>
               <div className="create-supplier-form-group">
-                <label className="create-supplier-label">Supplier Number</label>
+                <label className="create-supplier-label">
+                  Supplier Number<span style={{ color: "red" }}>*</span>
+                </label>
                 <input
                   name="supplier_number"
                   value={formData.supplier_number}
                   onChange={handleChange}
                   className="create-supplier-input"
+                  required
                   disabled={loading}
                 />
               </div>
@@ -179,32 +184,41 @@ export function CreateSupplierModal({ onClose, onSuccess }) {
                 className="create-supplier-form-group"
                 style={{ gridColumn: "1 / -1" }}
               >
-                <label className="create-supplier-label">Street</label>
+                <label className="create-supplier-label">
+                  Street<span style={{ color: "red" }}>*</span>
+                </label>
                 <input
                   name="street"
                   value={formData.street}
                   onChange={handleChange}
                   className="create-supplier-input"
+                  required
                   disabled={loading}
                 />
               </div>
               <div className="create-supplier-form-group">
-                <label className="create-supplier-label">Postal Code</label>
+                <label className="create-supplier-label">
+                  Postal Code<span style={{ color: "red" }}>*</span>
+                </label>
                 <input
                   name="postal_code"
                   value={formData.postal_code}
                   onChange={handleChange}
                   className="create-supplier-input"
+                  required
                   disabled={loading}
                 />
               </div>
               <div className="create-supplier-form-group">
-                <label className="create-supplier-label">City</label>
+                <label className="create-supplier-label">
+                  City<span style={{ color: "red" }}>*</span>
+                </label>
                 <input
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
                   className="create-supplier-input"
+                  required
                   disabled={loading}
                 />
               </div>
