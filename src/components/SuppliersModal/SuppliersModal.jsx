@@ -84,7 +84,32 @@ export function SuppliersModal({ onClose }) {
     <div className="suppliers-overlay">
       <div className="suppliers-dialog">
         <div className="suppliers-header">
-          <h2 className="suppliers-title">Available Suppliers</h2>
+          <h2
+            className="suppliers-title"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              margin: 0,
+            }}
+          >
+            Available Suppliers
+            <span
+              style={{
+                fontSize: "0.75rem",
+                color: "#0284c7",
+                backgroundColor: "#e0f2fe",
+                padding: "3px 10px",
+                borderRadius: "9999px",
+                fontWeight: "600",
+                border: "1px solid #bae6fd",
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
+              {suppliers.length}
+            </span>
+          </h2>
           <button onClick={onClose} className="suppliers-close-btn">
             <Icon.Close />
           </button>
@@ -132,7 +157,9 @@ export function SuppliersModal({ onClose }) {
                     maxWidth: "300px",
                   }}
                 />
-                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <div
+                  style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}
+                >
                   <button
                     type="button"
                     onClick={handleDownloadExcel}
@@ -151,7 +178,14 @@ export function SuppliersModal({ onClose }) {
                       whiteSpace: "nowrap",
                     }}
                   >
-                    <div style={{ width: "12px", height: "12px", display: "flex", alignItems: "center" }}>
+                    <div
+                      style={{
+                        width: "12px",
+                        height: "12px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
                       <Icon.Download />
                     </div>
                     Download Excel
@@ -174,7 +208,14 @@ export function SuppliersModal({ onClose }) {
                       whiteSpace: "nowrap",
                     }}
                   >
-                    <div style={{ width: "12px", height: "12px", display: "flex", alignItems: "center" }}>
+                    <div
+                      style={{
+                        width: "12px",
+                        height: "12px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
                       <Icon.Upload />
                     </div>
                     Upload Excel
@@ -262,36 +303,36 @@ export function SuppliersModal({ onClose }) {
                               {isStr
                                 ? supplier
                                 : supplier.name ||
-                                supplier.supplier_name ||
-                                "Unknown"}
+                                  supplier.supplier_name ||
+                                  "Unknown"}
                             </td>
                             <td className="suppliers-td suppliers-td-center">
                               {isStr
                                 ? "-"
                                 : supplier.code_1 || (
-                                  <span className="text-muted">-</span>
-                                )}
+                                    <span className="text-muted">-</span>
+                                  )}
                             </td>
                             <td className="suppliers-td suppliers-td-center">
                               {isStr
                                 ? "-"
                                 : supplier.code_2 || (
-                                  <span className="text-muted">-</span>
-                                )}
+                                    <span className="text-muted">-</span>
+                                  )}
                             </td>
                             <td className="suppliers-td suppliers-td-center">
                               {isStr
                                 ? "-"
                                 : supplier.code_3 || (
-                                  <span className="text-muted">-</span>
-                                )}
+                                    <span className="text-muted">-</span>
+                                  )}
                             </td>
                             <td className="suppliers-td suppliers-td-center">
                               {isStr
                                 ? "-"
                                 : supplier.code_4 || (
-                                  <span className="text-muted">-</span>
-                                )}
+                                    <span className="text-muted">-</span>
+                                  )}
                             </td>
                             <td className="suppliers-td suppliers-td-center">
                               {isStr ? "-" : supplier.address_count || 0}
@@ -300,8 +341,8 @@ export function SuppliersModal({ onClose }) {
                               {isStr || !supplier.updated_at
                                 ? "-"
                                 : new Date(
-                                  supplier.updated_at,
-                                ).toLocaleDateString()}
+                                    supplier.updated_at,
+                                  ).toLocaleDateString()}
                             </td>
                           </tr>
                         );

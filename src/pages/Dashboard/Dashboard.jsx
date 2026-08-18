@@ -9,7 +9,7 @@ import {
   OrderModal,
   SuppliersModal,
 } from "../../components";
-import { getOrders, getStats, syncPCloud, getSuppliers } from "../../services";
+import { getOrders, getStats, syncPCloud } from "../../services";
 import "./Dashboard.css";
 
 export function Dashboard({ username, onLogout }) {
@@ -27,16 +27,9 @@ export function Dashboard({ username, onLogout }) {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [o, s, suppliersData] = await Promise.all([
-        getOrders(),
-        getStats(),
-        getSuppliers()
-      ]);
+      const [o, s] = await Promise.all([getOrders(), getStats()]);
       setOrders(o);
-      
-      // Merge the actual supplier count from the suppliers API
-      const suppliersTotal = suppliersData?.total ?? suppliersData?.data?.total ?? 0;
-      setStats({ ...s, suppliers: suppliersTotal });
+      setStats(s);
     } catch (err) {
       console.error("Failed to load dashboard data:", err);
     } finally {
