@@ -1,0 +1,162 @@
+.suppliers-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1rem;
+}
+
+.suppliers-dialog {
+  background: #fff;
+  border-radius: 1.25rem;
+  width: 100%;
+  max-width: 1080px;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+}
+
+.suppliers-header {
+  padding: 0.625rem 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.suppliers-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.suppliers-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.suppliers-body {
+  padding: 1.25rem;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.suppliers-body::-webkit-scrollbar {
+  display: none;
+}
+
+.suppliers-table-wrapper {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.875rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.suppliers-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.suppliers-th {
+  padding: 0.625rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.suppliers-th-left {
+  text-align: left;
+}
+.suppliers-th-right {
+  text-align: right;
+}
+.suppliers-th-center {
+  text-align: center;
+}
+
+.suppliers-tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.suppliers-tr:last-child {
+  border-bottom: none;
+}
+
+.suppliers-tr-even {
+  background: #fff;
+}
+.suppliers-tr-odd {
+  background: #fafafa;
+}
+
+.suppliers-tr:hover {
+  background-color: #f1f5f9 !important;
+}
+
+.suppliers-td {
+  padding: 0.625rem;
+}
+
+.suppliers-td-left {
+  text-align: left;
+}
+.suppliers-td-right {
+  text-align: right;
+}
+.suppliers-td-center {
+  text-align: center;
+}
+
+.suppliers-td-bold {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.suppliers-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  color: #dc2626;
+  font-size: 0.85rem;
+}
+
+.suppliers-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 2rem 0;
+  font-size: 0.95rem;
+}
+
+.text-muted {
+  color: #94a3b8;
+}
+
+@media (max-width: 768px) {
+  .suppliers-table-wrapper {
+    overflow-x: auto;
+  }
+}

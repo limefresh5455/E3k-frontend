@@ -7,3 +7,7 @@ export { default as OrderCard } from "./OrderCard/OrderCard";
 export { default as SyncPanel } from "./SyncPanel/SyncPanel";
 export { default as UploadPdfModal } from "./UploadPdfModal/UploadPdfModal";
 export { default as OrderModal } from "./OrderModal/OrderModal";
+export { default as SuppliersModal } from "./SuppliersModal/SuppliersModal";
+export { default as CreateSupplierModal } from "./CreateSupplierModal/CreateSupplierModal";
+export { default as SupplierDetailModal } from "./SupplierDetailModal/SupplierDetailModal";
+export { default as UploadExcelModal } from "./UploadExcelModal/UploadExcelModal";
