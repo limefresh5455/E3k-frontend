@@ -59,3 +59,12 @@ export const updateOrderLine = async (payload) => {
     throw error;
   }
 };
+
+export const getOrderPdfUrl = async (orderId) => {
+  try {
+    const data = await client.get(`/orders/${orderId}/pdf-view-url`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

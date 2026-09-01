@@ -15,12 +15,12 @@ export function OrderCard({ order, onClick }) {
   const normalizedAlerts =
     hasDelivery && !hasUnit
       ? [
-          {
-            type: "unit_factor",
-            message: "Erneute Überprüfung erforderlich: Unit price conversion.",
-          },
-          ...rawAlerts,
-        ]
+        {
+          type: "unit_factor",
+          message: "Erneute Überprüfung erforderlich: Unit price conversion.",
+        },
+        ...rawAlerts,
+      ]
       : rawAlerts;
 
   const summaryAlerts = [

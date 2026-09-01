@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import Icon from "../Icon/Icon";
 import Badge from "../Badge/Badge";
 import Spinner from "../Spinner/Spinner";
-import { getOrder, updateOrderLine } from "../../services";
+import { getOrder, updateOrderLine, getOrderPdfUrl } from "../../services";
 import { asNumber } from "../../utils";
 import "./OrderModal.css";
 
@@ -34,7 +34,7 @@ const parseDateString = (dateStr) => {
       const day = String(d.getDate()).padStart(2, "0");
       return { year, month, day };
     }
-  } catch (e) {}
+  } catch (e) { }
 
   return null;
 };
@@ -61,8 +61,8 @@ const formatDateForUi = (dateStr) => {
 
 const getMonthMatrix = (year, month) => {
   const firstOfMonth = new Date(year, month, 1);
-  const jsDay = firstOfMonth.getDay(); 
-  const startOffset = (jsDay + 6) % 7; 
+  const jsDay = firstOfMonth.getDay();
+  const startOffset = (jsDay + 6) % 7;
   const gridStart = new Date(year, month, 1 - startOffset);
 
   const cells = [];
@@ -314,6 +314,7 @@ export function OrderModal({ orderId, onClose }) {
   const [saving, setSaving] = useState(false);
   const [hoveredDesc, setHoveredDesc] = useState(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+  const [viewPdfLoading, setViewPdfLoading] = useState(false);
   const [editData, setEditData] = useState({
     GrossPrice: "",
     DiscountPercent: "",
@@ -334,6 +335,24 @@ export function OrderModal({ orderId, onClose }) {
       }
       return next;
     });
+  };
+
+  const handleViewPdf = async () => {
+    if (!order?.id) return;
+    setViewPdfLoading(true);
+    try {
+      const res = await getOrderPdfUrl(order.id);
+      if (res && res.view_url) {
+        window.open(res.view_url, "_blank");
+      } else {
+        alert("No view URL returned from server.");
+      }
+    } catch (err) {
+      console.error("Failed to view PDF:", err);
+      alert("Failed to view PDF: " + (err.response?.data?.message || err.message));
+    } finally {
+      setViewPdfLoading(false);
+    }
   };
 
   const startEditing = (index, line) => {
@@ -383,7 +402,7 @@ export function OrderModal({ orderId, onClose }) {
       console.error("Failed to update order line:", err);
       alert(
         "Failed to update line: " +
-          (err.response?.data?.message || err.message),
+        (err.response?.data?.message || err.message),
       );
     } finally {
       setSaving(false);
@@ -413,17 +432,17 @@ export function OrderModal({ orderId, onClose }) {
   const computedNetTotal =
     order && order.summary
       ? lines.reduce((acc, line) => {
-          const qty = asNumber(line.Quantity) ?? 0;
-          const unitPrice = asNumber(line.GrossPrice ?? line.Price);
-          const discount = asNumber(line.DiscountPercent) ?? 0;
-          const lineTotal =
-            line.LineTotal !== undefined && line.LineTotal !== null
-              ? asNumber(line.LineTotal)
-              : unitPrice !== null
-                ? unitPrice * (1 - discount / 100) * qty
-                : 0;
-          return acc + lineTotal;
-        }, 0)
+        const qty = asNumber(line.Quantity) ?? 0;
+        const unitPrice = asNumber(line.GrossPrice ?? line.Price);
+        const discount = asNumber(line.DiscountPercent) ?? 0;
+        const lineTotal =
+          line.LineTotal !== undefined && line.LineTotal !== null
+            ? asNumber(line.LineTotal)
+            : unitPrice !== null
+              ? unitPrice * (1 - discount / 100) * qty
+              : 0;
+        return acc + lineTotal;
+      }, 0)
       : 0;
   const rawAlerts = order?.summary?.alerts || [];
   const hasUnitAlert = rawAlerts.some((a) => a?.type === "unit_factor");
@@ -434,12 +453,12 @@ export function OrderModal({ orderId, onClose }) {
   const normalizedAlerts =
     hasDeliveryAlert && !hasUnitAlert
       ? [
-          {
-            type: "unit_factor",
-            message: "Erneute Überprüfung erforderlich: Unit price conversion.",
-          },
-          ...rawAlerts,
-        ]
+        {
+          type: "unit_factor",
+          message: "Erneute Überprüfung erforderlich: Unit price conversion.",
+        },
+        ...rawAlerts,
+      ]
       : rawAlerts;
 
   const alerts = [
@@ -469,7 +488,19 @@ export function OrderModal({ orderId, onClose }) {
                 />
               )}
             </div>
-            <p className="order-modal-subtitle">{order?.file_name}</p>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "4px", flexWrap: "wrap" }}>
+              <p className="order-modal-subtitle" style={{ margin: 0 }}>{order?.file_name}</p>
+              {order?.file_name && (
+                <button
+                  onClick={handleViewPdf}
+                  className="order-modal-btn-view-pdf"
+                  disabled={viewPdfLoading}
+                >
+                  <Icon.ExternalLink />
+                  <span style={{ marginTop: "1px" }}>{viewPdfLoading ? "Loading..." : "View PDF"}</span>
+                </button>
+              )}
+            </div>
           </div>
           <button onClick={onClose} className="order-modal-close-btn">
             <Icon.Close />
@@ -574,11 +605,11 @@ export function OrderModal({ orderId, onClose }) {
                             const netUnitPrice =
                               unitPrice !== null
                                 ? unitPrice *
-                                  (1 - (line.DiscountPercent ?? 0) / 100)
+                                (1 - (line.DiscountPercent ?? 0) / 100)
                                 : null;
                             const total =
                               line.LineTotal !== undefined &&
-                              line.LineTotal !== null
+                                line.LineTotal !== null
                                 ? asNumber(line.LineTotal)
                                 : netUnitPrice !== null
                                   ? netUnitPrice * qty
@@ -652,7 +683,7 @@ export function OrderModal({ orderId, onClose }) {
                                 </td>
                                 <td className="order-modal-td order-modal-td-einheit">
                                   {line.Einheit !== undefined &&
-                                  line.Einheit !== null
+                                    line.Einheit !== null
                                     ? line.Einheit
                                     : "—"}
                                 </td>
@@ -789,8 +820,8 @@ export function OrderModal({ orderId, onClose }) {
                           "Processed",
                           order.processed_at
                             ? new Date(order.processed_at).toLocaleString(
-                                "de-CH",
-                              )
+                              "de-CH",
+                            )
                             : "—",
                         ],
                       ].map(([k, v]) => (
@@ -820,34 +851,34 @@ export function OrderModal({ orderId, onClose }) {
                                 >
                                   {a.type === "unit_factor"
                                     ? (() => {
-                                        const article =
-                                          ln.article_number || "?";
-                                        const factor = ln.factor ?? null;
-                                        const base = ln.base_unit_price ?? null;
-                                        const erp = ln.erp_unit_price ?? null;
-                                        if (
-                                          factor === null ||
-                                          base === null ||
-                                          erp === null
-                                        ) {
-                                          return `Article ${article}: Einheit/unit-factor pricing detected. Please verify unit price manually.`;
-                                        }
-                                        return `Article ${article}: factor ${factor}, base ${base} -> ERP ${erp}`;
-                                      })()
+                                      const article =
+                                        ln.article_number || "?";
+                                      const factor = ln.factor ?? null;
+                                      const base = ln.base_unit_price ?? null;
+                                      const erp = ln.erp_unit_price ?? null;
+                                      if (
+                                        factor === null ||
+                                        base === null ||
+                                        erp === null
+                                      ) {
+                                        return `Article ${article}: Einheit/unit-factor pricing detected. Please verify unit price manually.`;
+                                      }
+                                      return `Article ${article}: factor ${factor}, base ${base} -> ERP ${erp}`;
+                                    })()
                                     : a.type === "delivery_date_gt_one_week"
                                       ? (() => {
-                                          const article =
-                                            ln.article_number || "?";
-                                          const orderDate =
-                                            ln.order_date || "not found";
-                                          const deliveryDate =
-                                            ln.delivery_date || "not found";
-                                          const days = ln.days_after_order;
-                                          const daysText = Number.isFinite(days)
-                                            ? `${days} days`
-                                            : "more than one week";
-                                          return `Article ${article}: order ${orderDate}, delivery ${deliveryDate} (${daysText})`;
-                                        })()
+                                        const article =
+                                          ln.article_number || "?";
+                                        const orderDate =
+                                          ln.order_date || "not found";
+                                        const deliveryDate =
+                                          ln.delivery_date || "not found";
+                                        const days = ln.days_after_order;
+                                        const daysText = Number.isFinite(days)
+                                          ? `${days} days`
+                                          : "more than one week";
+                                        return `Article ${article}: order ${orderDate}, delivery ${deliveryDate} (${daysText})`;
+                                      })()
                                       : JSON.stringify(ln)}
                                 </p>
                               ))}
