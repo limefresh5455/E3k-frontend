@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { PublicTabs, Icon } from "../../components";
 import "./LoginPage.css";
 
-export function LoginPage({ onLogin, onOpenMonthlyInvoice }) {
+export function LoginPage({
+  onLogin,
+  onOpenMonthlyInvoice,
+  onOpenFinanzCockpit,
+}) {
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,7 +30,8 @@ export function LoginPage({ onLogin, onOpenMonthlyInvoice }) {
         <PublicTabs
           active="login"
           onSelect={(tab) => {
-            if (tab === "monthly-invoice") onOpenMonthlyInvoice();
+            if (tab === "monthly-invoice") onOpenMonthlyInvoice?.();
+            if (tab === "finanz-cockpit") onOpenFinanzCockpit?.();
           }}
         />
 

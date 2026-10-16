@@ -1,0 +1,782 @@
+.fc-cockpit {
+  font-family: Inter, Segoe UI, Arial, sans-serif;
+  color: #102941;
+  background: #f4f7fb
+}
+
+.fc-cockpit,
+.fc-cockpit * {
+  box-sizing: border-box
+}
+
+.fc-cockpit {
+  margin: 0
+}
+
+.fc-cockpit .wrap {
+  max-width: 1420px;
+  margin: auto;
+  padding: 24px
+}
+
+.fc-cockpit header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 22px
+}
+
+.fc-cockpit .eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #038c99
+}
+
+.fc-cockpit h1 {
+  font-size: 31px;
+  margin: 6px 0
+}
+
+.fc-cockpit h2 {
+  font-size: 18px;
+  margin: 0 0 4px
+}
+
+.fc-cockpit h3 {
+  font-size: 15px
+}
+
+.fc-cockpit p {
+  color: #61758d;
+  margin: 5px 0
+}
+
+.fc-cockpit .switch {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  background: #e8edf5;
+  border-radius: 12px
+}
+
+.fc-cockpit .switch button {
+  background: transparent;
+  border: 0;
+  padding: 13px 22px;
+  color: #55708f;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer
+}
+
+.fc-cockpit .switch button.active {
+  color: #fff;
+  background: #123a63;
+  box-shadow: 0 3px 9px #123a6322
+}
+
+.fc-cockpit .panel {
+  background: white;
+  border: 1px solid #dfe8f1;
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 20px #1a385507
+}
+
+.fc-cockpit .sectiontop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px
+}
+
+.fc-cockpit .chip {
+  font-size: 12px;
+  border: 1px solid #d9e5ef;
+  background: #f3f8fc;
+  color: #37617a;
+  padding: 8px 12px;
+  border-radius: 20px
+}
+
+.fc-cockpit .cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+  margin-bottom: 19px
+}
+
+.fc-cockpit .card {
+  border: 1px solid #e0e8f1;
+  background: #fcfdff;
+  padding: 18px;
+  border-radius: 12px
+}
+
+.fc-cockpit .card label {
+  display: block;
+  color: #61758d;
+  font-size: 12px;
+  margin-bottom: 10px
+}
+
+.fc-cockpit .card strong {
+  display: block;
+  font-size: clamp(17px, 2vw, 25px);
+  letter-spacing: -.6px
+}
+
+.fc-cockpit .card small {
+  display: block;
+  color: #70839a;
+  margin-top: 10px;
+  font-size: 12px
+}
+
+.fc-cockpit .cards-secondary {
+  margin-top: -5px;
+  margin-bottom: 22px
+}
+
+.fc-cockpit .cards-secondary .card {
+  background: #f7fafd
+}
+
+.fc-cockpit .cards-secondary .card strong {
+  font-size: clamp(18px, 2vw, 24px)
+}
+
+.fc-cockpit .muted {
+  color: #8696a8
+}
+
+.fc-cockpit .good {
+  color: #147e58 !important
+}
+
+.fc-cockpit .bad {
+  color: #c24e49 !important
+}
+
+.fc-cockpit .tablewrap {
+  overflow-x: auto
+}
+
+.fc-cockpit table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px
+}
+
+.fc-cockpit th {
+  background: #f3f6fa;
+  color: #5f738a;
+  font-size: 12px;
+  text-align: right;
+  padding: 13px 12px;
+  border-bottom: 1px solid #dde6ef
+}
+
+.fc-cockpit th:first-child,
+.fc-cockpit td:first-child {
+  text-align: left
+}
+
+.fc-cockpit td {
+  text-align: right;
+  padding: 12px;
+  border-bottom: 1px solid #e8eef4;
+  font-variant-numeric: tabular-nums
+}
+
+.fc-cockpit tr.total td {
+  font-weight: 800;
+  background: #f6faff
+}
+
+.fc-cockpit .note {
+  border-left: 3px solid #dcaa42;
+  background: #fff9ec;
+  padding: 13px 15px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #805d23;
+  margin-top: 17px
+}
+
+.fc-cockpit .monthgrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px
+}
+
+.fc-cockpit .month {
+  border: 1px solid #e0e8f1;
+  border-radius: 13px;
+  background: white;
+  overflow: hidden
+}
+
+.fc-cockpit .monthhead {
+  background: #f5f8fc;
+  padding: 17px
+}
+
+.fc-cockpit .monthhead h3 {
+  margin: 0 0 11px
+}
+
+.fc-cockpit .monthstats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 12px
+}
+
+.fc-cockpit .monthstats strong {
+  font-size: 17px;
+  display: block;
+  color: #133453;
+  margin-top: 4px
+}
+
+.fc-cockpit .groups {
+  padding: 10px 15px
+}
+
+.fc-cockpit .groups details {
+  border-bottom: 1px solid #e5ecf3
+}
+
+.fc-cockpit .groups details:last-child {
+  border: 0
+}
+
+.fc-cockpit .groups summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 2px;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700
+}
+
+.fc-cockpit .groups summary::-webkit-details-marker {
+  display: none
+}
+
+.fc-cockpit .groups summary:before {
+  content: '▸';
+  color: #61809c;
+  margin-right: 3px
+}
+
+.fc-cockpit .groups details[open] summary:before {
+  content: '▾'
+}
+
+.fc-cockpit .groups summary span:first-child {
+  flex: 1
+}
+
+.fc-cockpit .items {
+  width: 100%;
+  font-size: 11px;
+  border-collapse: collapse;
+  margin-bottom: 8px
+}
+
+.fc-cockpit .items td {
+  padding: 7px 3px;
+  line-height: 1.35
+}
+
+.fc-cockpit .items td:first-child {
+  color: #52677a
+}
+
+.fc-cockpit .items tr:last-child td {
+  border-bottom: 0
+}
+
+.fc-cockpit .subtitle {
+  font-size: 13px
+}
+
+.fc-cockpit .highlight {
+  color: #008b91
+}
+
+.fc-cockpit .bar {
+  height: 7px;
+  background: #e5edf4;
+  border-radius: 9px;
+  overflow: hidden;
+  margin: 8px 0 0
+}
+
+.fc-cockpit .bar>div {
+  height: 100%;
+  background: #178e99
+}
+
+.fc-cockpit .import-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap
+}
+
+.fc-cockpit .action {
+  appearance: none;
+  cursor: pointer;
+  border: 1px solid #bed1e3;
+  border-radius: 9px;
+  padding: 11px 14px;
+  background: #fff;
+  color: #123a63;
+  font: 600 12px Inter, Arial, sans-serif
+}
+
+.fc-cockpit .action.primary {
+  background: #123a63;
+  color: white
+}
+
+.fc-cockpit .importmsg {
+  padding: 12px;
+  background: #f2f7fb;
+  border-radius: 8px;
+  color: #476079;
+  font-size: 12px;
+  line-height: 1.6
+}
+
+.fc-cockpit .importmsg.error {
+  background: #fff0ec;
+  color: #9e3b2e
+}
+
+.fc-cockpit .importmsg.ok {
+  background: #e9f9f2;
+  color: #176747
+}
+
+.fc-cockpit .pendingitem {
+  margin-top: 12px;
+  padding: 13px;
+  border: 1px solid #dbe6f1;
+  border-radius: 10px;
+  font-size: 13px
+}
+
+.fc-cockpit .pendingitem strong {
+  display: block;
+  margin-bottom: 7px
+}
+
+.fc-cockpit .pendingitem button {
+  margin-top: 10px;
+  margin-right: 8px
+}
+
+.fc-cockpit .footer {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #65788d;
+  margin: 10px 0 28px
+}
+
+@media(max-width:1050px) {
+  .fc-cockpit .monthgrid {
+    grid-template-columns: 1fr
+  }
+
+  .fc-cockpit .cards {
+    grid-template-columns: repeat(2, 1fr)
+  }
+}
+
+@media(max-width:580px) {
+  .fc-cockpit .wrap {
+    padding: 12px
+  }
+
+  .fc-cockpit .cards {
+    grid-template-columns: 1fr 1fr
+  }
+
+  .fc-cockpit .card {
+    padding: 12px
+  }
+
+  .fc-cockpit .switch {
+    width: 100%;
+    justify-content: space-between
+  }
+
+  .fc-cockpit .switch button {
+    padding: 10px 12px
+  }
+
+  .fc-cockpit .panel {
+    padding: 15px
+  }
+
+  .fc-cockpit h1 {
+    font-size: 25px
+  }
+}
+
+.fc-cockpit .subrow td {
+  padding-left: 24px;
+  color: #5e6c84;
+  font-size: 13px
+}
+
+.fc-cockpit .splitline {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 0 8px;
+  font-size: 12px;
+  color: #506079;
+  border-bottom: 1px dashed #d9e2ef;
+  margin-bottom: 8px
+}
+
+.fc-cockpit .splitline span:last-child {
+  font-weight: 700;
+  color: #153d6f
+}
+
+
+.fc-cockpit .benchmark-intro {
+  font-size: 13px;
+  color: #61758d;
+  line-height: 1.55;
+  margin: 0 0 16px
+}
+
+.fc-cockpit .benchmark-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+  margin-bottom: 17px
+}
+
+.fc-cockpit .benchmark-item {
+  background: #f7fafd;
+  border: 1px solid #e0e8f1;
+  padding: 17px;
+  border-radius: 12px
+}
+
+.fc-cockpit .benchmark-item .blabel {
+  font-size: 12px;
+  color: #61758d
+}
+
+.fc-cockpit .benchmark-item strong {
+  display: block;
+  font-size: 23px;
+  color: #153450;
+  margin: 9px 0
+}
+
+.fc-cockpit .benchmark-item small {
+  color: #61758d;
+  font-size: 12px;
+  line-height: 1.4
+}
+
+.fc-cockpit .benchmark-chart {
+  display: grid;
+  gap: 9px;
+  margin: 10px 0 18px
+}
+
+.fc-cockpit .benchmark-bar {
+  display: grid;
+  grid-template-columns: 155px minmax(0, 1fr) 65px;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px
+}
+
+.fc-cockpit .benchmark-track {
+  height: 13px;
+  border-radius: 10px;
+  background: #e8edf5;
+  overflow: hidden
+}
+
+.fc-cockpit .benchmark-fill {
+  height: 100%;
+  border-radius: 10px;
+  background: #157c89
+}
+
+.fc-cockpit .benchmark-bar.reference .benchmark-fill {
+  background: #9baabd
+}
+
+.fc-cockpit .benchmark-method {
+  padding: 12px 14px;
+  background: #fff9ec;
+  border-left: 3px solid #dcaa42;
+  font-size: 12px;
+  color: #735c30;
+  line-height: 1.55
+}
+
+.fc-cockpit .benchmark-method a {
+  color: #205b93
+}
+
+@media(max-width:760px) {
+  .fc-cockpit .benchmark-grid {
+    grid-template-columns: 1fr
+  }
+
+  .fc-cockpit .benchmark-bar {
+    grid-template-columns: 100px 1fr 55px
+  }
+}
+
+.fc-cockpit .subrow td {
+  padding-left: 24px;
+  color: #5e6c84;
+  font-size: 13px
+}
+
+.fc-cockpit .splitline {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 0 8px;
+  font-size: 12px;
+  color: #506079;
+  border-bottom: 1px dashed #d9e2ef;
+  margin-bottom: 8px
+}
+
+.fc-cockpit .splitline span:last-child {
+  font-weight: 700;
+  color: #153d6f
+}
+
+.fc-cockpit .kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px
+}
+
+.fc-cockpit .kpi-card {
+  border: 1px solid #e2e9f2;
+  border-radius: 13px;
+  padding: 16px;
+  background: #fcfdff
+}
+
+.fc-cockpit .kpi-top {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 8px
+}
+
+.fc-cockpit .kpi-name {
+  font-size: 13px;
+  font-weight: 750;
+  color: #20405e
+}
+
+.fc-cockpit .kpi-status {
+  border-radius: 20px;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap
+}
+
+.fc-cockpit .kpi-status.green {
+  background: #e5f5ee;
+  color: #13704e
+}
+
+.fc-cockpit .kpi-status.yellow {
+  background: #fff3cf;
+  color: #916315
+}
+
+.fc-cockpit .kpi-status.red {
+  background: #fce8e7;
+  color: #a83935
+}
+
+.fc-cockpit .kpi-status.gray {
+  background: #eaf0f6;
+  color: #586b80
+}
+
+.fc-cockpit .kpi-values {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 11px
+}
+
+.fc-cockpit .kpi-values strong {
+  font-size: 25px;
+  letter-spacing: -.6px
+}
+
+.fc-cockpit .kpi-values span {
+  font-size: 12px;
+  color: #667d93
+}
+
+.fc-cockpit .kpi-context {
+  font-size: 12px;
+  color: #61758d;
+  margin-top: 9px;
+  line-height: 1.45
+}
+
+.fc-cockpit .kpi-summary {
+  font-size: 13px;
+  color: #526b83;
+  margin: 0 0 16px;
+  padding: 11px 13px;
+  background: #f3f8fc;
+  border-radius: 10px
+}
+
+.fc-cockpit .kpi-legend {
+  font-size: 12px;
+  color: #64788e;
+  margin: 14px 0 0;
+  line-height: 1.55
+}
+
+@media(max-width:750px) {
+  .fc-cockpit .kpi-grid {
+    grid-template-columns: 1fr
+  }
+}
+
+.fc-cockpit .kpi-drilldown {
+  margin-top: 13px;
+  border-top: 1px solid #e2e9f2;
+  padding-top: 10px
+}
+
+.fc-cockpit .kpi-drilldown summary {
+  font-size: 12px;
+  color: #123a63;
+  cursor: pointer;
+  font-weight: 750;
+  list-style: none
+}
+
+.fc-cockpit .kpi-drilldown summary::-webkit-details-marker {
+  display: none
+}
+
+.fc-cockpit .kpi-drilldown summary:before {
+  content: '▸ ';
+  color: #008b91
+}
+
+.fc-cockpit .kpi-drilldown[open] summary:before {
+  content: '▾ '
+}
+
+.fc-cockpit .kpi-drilldown .analysis-inner {
+  font-size: 12px;
+  color: #52677a;
+  padding: 12px 0 2px;
+  line-height: 1.55
+}
+
+.fc-cockpit .analysis-inner table {
+  font-size: 11px;
+  margin: 8px 0
+}
+
+.fc-cockpit .analysis-inner th,
+.fc-cockpit .analysis-inner td {
+  padding: 8px 5px
+}
+
+.fc-cockpit .analysis-inner .caution {
+  background: #fff9ec;
+  border-left: 3px solid #dcaa42;
+  padding: 10px;
+  margin-bottom: 8px
+}
+
+/* Header Actions & Sign Out Button */
+.fc-cockpit .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.fc-cockpit .fc-signout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 16px 18px;
+  background: #e8edf5;
+  border: 1px solid #d9e3f0;
+  border-radius: 12px;
+  color: #55708f;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.fc-cockpit .fc-signout-btn svg {
+  color: #64748b;
+  transition: all 0.18s ease;
+}
+
+.fc-cockpit .fc-signout-btn:hover {
+  background: #ffe4e6;
+  border-color: #fecdd3;
+  color: #e11d48;
+  box-shadow: 0 3px 9px rgba(225, 29, 72, 0.14);
+  transform: translateY(-1px);
+}
+
+.fc-cockpit .fc-signout-btn:hover svg {
+  color: #e11d48;
+}
+
+.fc-cockpit .fc-signout-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 580px) {
+  .fc-cockpit .header-actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks";
-import { LoginPage, MonthlyInvoicePage, Dashboard } from "../pages";
+import { LoginPage, MonthlyInvoicePage, Dashboard, FinanzCockpitPage } from "../pages";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 export default function AppRoutes() {
@@ -18,7 +18,8 @@ export default function AppRoutes() {
           ) : (
             <LoginPage
               onLogin={login}
-              onOpenMonthlyInvoice={() => navigate("/monthly-invoice")}
+              onOpenMonthlyInvoice={() => navigate("/monthly-invoice", { replace: true })}
+              onOpenFinanzCockpit={() => navigate("/finanz-cockpit", { replace: true })}
             />
           )
         }
@@ -29,7 +30,20 @@ export default function AppRoutes() {
           user ? (
             <Navigate to="/dashboard" replace />
           ) : (
-            <MonthlyInvoicePage onOpenLogin={() => navigate("/login")} />
+            <MonthlyInvoicePage
+              onOpenLogin={() => navigate("/login", { replace: true })}
+              onOpenFinanzCockpit={() => navigate("/finanz-cockpit", { replace: true })}
+            />
+          )
+        }
+      />
+      <Route
+        path="/finanz-cockpit"
+        element={
+          user ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <FinanzCockpitPage />
           )
         }
       />

@@ -11,10 +11,12 @@
   flex: 1;
   border: none;
   border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.8125rem;
+  padding: 0.5rem 0.5rem;
+  font-size: 0.775rem;
   font-weight: 700;
   cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
   transition:
     background-color 0.15s,
     color 0.15s;

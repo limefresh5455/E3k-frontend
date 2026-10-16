@@ -5,6 +5,7 @@ export function PublicTabs({ active, onSelect }) {
   const tabs = [
     ["login", "Sign In"],
     ["monthly-invoice", "Monthly Invoice"],
+    ["finanz-cockpit", "Finanz-Cockpit"],
   ];
 
   return (
