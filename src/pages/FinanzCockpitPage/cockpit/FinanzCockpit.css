@@ -734,6 +734,48 @@
   flex-wrap: wrap;
 }
 
+.fc-cockpit .fc-new-user-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 16px 18px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  color: #1d4ed8;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.fc-cockpit .fc-new-user-btn svg {
+  color: #2563eb;
+  transition: all 0.18s ease;
+}
+
+.fc-cockpit .fc-new-user-btn:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e40af;
+  box-shadow: 0 3px 9px rgba(37, 99, 235, 0.16);
+  transform: translateY(-1px);
+}
+
+.fc-cockpit .fc-new-user-btn:hover svg {
+  color: #1e40af;
+}
+
+.fc-cockpit .fc-new-user-btn:active {
+  transform: translateY(0);
+}
+
+.fc-cockpit .fc-signout-dropdown-wrapper {
+  position: relative;
+}
+
 .fc-cockpit .fc-signout-btn {
   display: inline-flex;
   align-items: center;
@@ -756,21 +798,113 @@
   transition: all 0.18s ease;
 }
 
-.fc-cockpit .fc-signout-btn:hover {
+.fc-cockpit .fc-signout-btn .fc-chevron {
+  transition: transform 0.2s ease;
+  margin-left: 2px;
+}
+
+.fc-cockpit .fc-signout-btn .fc-chevron.open {
+  transform: rotate(180deg);
+}
+
+.fc-cockpit .fc-signout-btn:hover,
+.fc-cockpit .fc-signout-btn.active {
   background: #ffe4e6;
   border-color: #fecdd3;
   color: #e11d48;
   box-shadow: 0 3px 9px rgba(225, 29, 72, 0.14);
-  transform: translateY(-1px);
 }
 
-.fc-cockpit .fc-signout-btn:hover svg {
+.fc-cockpit .fc-signout-btn:hover svg,
+.fc-cockpit .fc-signout-btn.active svg {
   color: #e11d48;
 }
 
 .fc-cockpit .fc-signout-btn:active {
   transform: translateY(0);
 }
+
+.fc-cockpit .fc-signout-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 250px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+  padding: 6px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: fcDropdownFade 0.16s ease-out;
+}
+
+@keyframes fcDropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fc-cockpit .fc-signout-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+
+.fc-cockpit .fc-signout-item:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.fc-cockpit .fc-signout-item.danger:hover:not(:disabled) {
+  background: #fff1f2;
+}
+
+.fc-cockpit .fc-signout-item.danger svg {
+  color: #e11d48;
+}
+
+.fc-cockpit .fc-signout-item:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fc-cockpit .fc-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fc-cockpit .fc-item-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.fc-cockpit .fc-signout-item.danger .fc-item-title {
+  color: #be123c;
+}
+
+.fc-cockpit .fc-item-desc {
+  font-size: 11px;
+  color: #64748b;
+}
+
 
 @media (max-width: 580px) {
   .fc-cockpit .header-actions {
