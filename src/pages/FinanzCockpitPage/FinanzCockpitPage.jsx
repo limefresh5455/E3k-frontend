@@ -210,6 +210,7 @@ export default function FinanzCockpitPage() {
           onSelect={(tab) => {
             if (tab === "login") navigate("/login", { replace: true });
             if (tab === "monthly-invoice") navigate("/monthly-invoice", { replace: true });
+            if (tab === "worker-dashboard") navigate("/worker-dashboard", { replace: true });
           }}
         />
 

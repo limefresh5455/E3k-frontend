@@ -1,22 +1,27 @@
 .public-tabs-container {
   display: flex;
-  gap: 0.375rem;
+  align-items: center;
+  gap: 0.35rem;
   background: #f1f5f9;
   border-radius: 0.625rem;
-  padding: 0.25rem;
-  margin-bottom: 1.25rem;
+  padding: 0.3rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .public-tabs-btn {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: max-content;
   border: none;
   border-radius: 0.5rem;
-  padding: 0.5rem 0.5rem;
-  font-size: 0.775rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
   text-align: center;
+  box-sizing: border-box;
   transition:
     background-color 0.15s,
     color 0.15s;

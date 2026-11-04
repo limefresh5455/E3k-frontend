@@ -10,8 +10,9 @@
   border-radius: 1.25rem;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
   width: 100%;
-  max-width: 440px;
+  max-width: 640px;
   padding: 2.5rem;
+  box-sizing: border-box;
 }
 
 .login-header {

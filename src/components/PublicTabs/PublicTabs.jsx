@@ -6,6 +6,7 @@ export function PublicTabs({ active, onSelect }) {
     ["login", "Sign In"],
     ["monthly-invoice", "Monthly Invoice"],
     ["finanz-cockpit", "Finanz-Cockpit"],
+    ["worker-dashboard", "Worker Dashboard"],
   ];
 
   return (

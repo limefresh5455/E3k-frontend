@@ -3,7 +3,11 @@ import { PublicTabs } from "../../components";
 import { uploadMonthlyInvoicePdf } from "../../services";
 import "./MonthlyInvoicePage.css";
 
-export function MonthlyInvoicePage({ onOpenLogin, onOpenFinanzCockpit }) {
+export function MonthlyInvoicePage({
+  onOpenLogin,
+  onOpenFinanzCockpit,
+  onOpenWorkerDashboard,
+}) {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,6 +50,7 @@ export function MonthlyInvoicePage({ onOpenLogin, onOpenFinanzCockpit }) {
           onSelect={(tab) => {
             if (tab === "login") onOpenLogin?.();
             if (tab === "finanz-cockpit") onOpenFinanzCockpit?.();
+            if (tab === "worker-dashboard") onOpenWorkerDashboard?.();
           }}
         />
 

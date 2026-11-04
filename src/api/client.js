@@ -6,6 +6,7 @@ const client = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 client.interceptors.request.use(
@@ -17,11 +18,24 @@ client.interceptors.request.use(
       config.url = config.url.replace(/^\/api/, "");
     }
 
-    // Determine correct token (prefer finanz_cockpit_token for finance requests)
+    const isWorker = config.url?.includes("worker");
     const isFinance = config.url?.includes("finance");
-    const token = isFinance
-      ? localStorage.getItem("finanz_cockpit_token") || localStorage.getItem("token")
-      : localStorage.getItem("token") || localStorage.getItem("finanz_cockpit_token");
+    let token = null;
+
+    if (isWorker) {
+      token =
+        localStorage.getItem("worker_dashboard_token") ||
+        localStorage.getItem("token");
+    } else if (isFinance) {
+      token =
+        localStorage.getItem("finanz_cockpit_token") ||
+        localStorage.getItem("token");
+    } else {
+      token =
+        localStorage.getItem("token") ||
+        localStorage.getItem("finanz_cockpit_token") ||
+        localStorage.getItem("worker_dashboard_token");
+    }
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
@@ -44,8 +58,14 @@ client.interceptors.response.use(
       error.config &&
       !error.config.url.includes("/login")
     ) {
+      const isWorker = error.config.url?.includes("worker");
       const isFinance = error.config.url?.includes("finance");
-      if (isFinance) {
+      if (isWorker) {
+        localStorage.removeItem("worker_dashboard_token");
+        localStorage.removeItem("worker_dashboard_refresh_token");
+        localStorage.removeItem("worker_dashboard_auth");
+        window.dispatchEvent(new Event("worker-dashboard-logout"));
+      } else if (isFinance) {
         localStorage.removeItem("finanz_cockpit_token");
         localStorage.removeItem("finanz_cockpit_auth");
         window.dispatchEvent(new Event("finanz-cockpit-logout"));

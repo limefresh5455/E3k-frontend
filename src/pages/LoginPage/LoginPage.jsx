@@ -6,6 +6,7 @@ export function LoginPage({
   onLogin,
   onOpenMonthlyInvoice,
   onOpenFinanzCockpit,
+  onOpenWorkerDashboard,
 }) {
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
@@ -32,6 +33,7 @@ export function LoginPage({
           onSelect={(tab) => {
             if (tab === "monthly-invoice") onOpenMonthlyInvoice?.();
             if (tab === "finanz-cockpit") onOpenFinanzCockpit?.();
+            if (tab === "worker-dashboard") onOpenWorkerDashboard?.();
           }}
         />
 

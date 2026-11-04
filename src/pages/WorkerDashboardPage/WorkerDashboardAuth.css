@@ -1,0 +1,21 @@
+.worker-login-icon {
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+}
+
+.worker-quick-demo-box {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 0.625rem;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: center;
+}
+
+.worker-quick-demo-title {
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.25rem;
+}
+
