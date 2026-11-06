@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { getWorkers as apiGetWorkers, setUserActive } from "../../services";
 import EditWorkerUserModal from "./EditWorkerUserModal";
 
@@ -27,11 +27,13 @@ export default function WorkerUsersTable() {
   const [toggleError, setToggleError] = useState(null);
   const [editingWorker, setEditingWorker] = useState(null);
 
-  const fetchWorkers = async () => {
+  const hasFetchedRef = useRef(false);
+
+  const fetchWorkers = async (force = false) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await apiGetWorkers();
+      const data = await apiGetWorkers(force);
       setWorkers(Array.isArray(data) ? data : data?.users || []);
     } catch (err) {
       setError(err.message || "Failed to load worker users");
@@ -41,10 +43,14 @@ export default function WorkerUsersTable() {
   };
 
   useEffect(() => {
+    if (hasFetchedRef.current) return;
+    hasFetchedRef.current = true;
     fetchWorkers();
+  }, []);
 
+  useEffect(() => {
     const handleUsersUpdated = () => {
-      fetchWorkers();
+      fetchWorkers(true);
     };
     window.addEventListener("worker-users-updated", handleUsersUpdated);
     return () => {
@@ -102,14 +108,14 @@ export default function WorkerUsersTable() {
     });
   }, [workers, searchTerm]);
 
-  // Reset to first page whenever search term changes
+  
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
 
   const totalPages = Math.ceil(filteredWorkers.length / PAGE_SIZE) || 1;
 
-  // Clamp current page if list shrinks
+  
   useEffect(() => {
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
@@ -160,29 +166,6 @@ export default function WorkerUsersTable() {
               className="search-input"
             />
           </div>
-
-          <button
-            type="button"
-            onClick={fetchWorkers}
-            disabled={loading}
-            className={`refresh-icon-btn ${loading ? "spinning" : ""}`}
-            title="Reload workers"
-          >
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="23 4 23 10 17 10" />
-              <polyline points="1 20 1 14 7 14" />
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-            </svg>
-          </button>
         </div>
       </div>
 
@@ -197,7 +180,7 @@ export default function WorkerUsersTable() {
           <span>{error}</span>
           <button
             type="button"
-            onClick={fetchWorkers}
+            onClick={() => fetchWorkers(true)}
             style={{
               background: "transparent",
               border: "none",
@@ -213,7 +196,32 @@ export default function WorkerUsersTable() {
       )}
 
       {loading && workers.length === 0 ? (
-        <div className="empty-table-state">Loading worker accounts…</div>
+        <div
+          className="empty-table-state"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "12px",
+            padding: "48px 16px",
+          }}
+        >
+          <div
+            className="spinner"
+            style={{
+              width: "36px",
+              height: "36px",
+              border: "3px solid #dfe8f1",
+              borderTopColor: "#038c99",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+            }}
+          />
+          <span style={{ fontSize: "14px", fontWeight: 500, color: "#61758d" }}>
+            Loading worker accounts…
+          </span>
+        </div>
       ) : filteredWorkers.length === 0 ? (
         <div className="empty-table-state">
           {searchTerm

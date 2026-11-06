@@ -1,51 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  getMe as apiGetMe,
-  logout as apiLogout,
-  getStoredAuth,
-} from "../services";
+import React, { useState } from "react";
+import { useWorkerAuth } from "../context/WorkerAuthContext";
 import WorkerUsersTable from "./components/WorkerUsersTable";
 import CreateWorkerUserModal from "./components/CreateWorkerUserModal";
 import UserScopedDashboard from "./components/UserScopedDashboard";
 import AdminCompanyWorkspaces from "./components/AdminCompanyWorkspaces";
 import "./WorkerDashboard.css";
 
-// Default sample user fallback matching requirements if testing
-const DEFAULT_SAMPLE_USER = {
-  id: 5,
-  email: "info@tebo.ag",
-  display_name: "Info Tebo",
-  entitlements: [
-    {
-      permission: "finance.read",
-      company_scope: "tebo",
-    },
-    {
-      permission: "worker.read",
-      company_scope: "tebo",
-    },
-    {
-      permission: "finance.read",
-      company_scope: "ssb",
-    },
-    {
-      permission: "worker.read",
-      company_scope: "ssb",
-    },
-  ],
-  is_active: true,
-  role: "user",
-};
-
 export default function WorkerDashboard({ user: initialUser, onLogout }) {
-  const [user, setUser] = useState(() => {
-    return initialUser || getStoredAuth()?.user || null;
-  });
+  const { user: contextUser, logout: contextLogout } = useWorkerAuth();
+  const user = contextUser || initialUser;
   const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
 
-  const hasFetchedRef = useRef(false);
-
-  // Derive role — support both top-level `role` and entitlements-based role
   const isAdmin = (() => {
     const role = (user?.role || "").toLowerCase();
     if (role === "admin") return true;
@@ -53,32 +18,12 @@ export default function WorkerDashboard({ user: initialUser, onLogout }) {
     return false;
   })();
 
-  useEffect(() => {
-    if (hasFetchedRef.current) return;
-    hasFetchedRef.current = true;
-
-    const fetchMe = async () => {
-      try {
-        const res = await apiGetMe();
-        const fetchedUser = res?.user || res;
-        if (fetchedUser) {
-          setUser(fetchedUser);
-        }
-      } catch (err) {
-        console.warn("Could not load /auth/me on dashboard mount:", err);
-      }
-    };
-
-    fetchMe();
-  }, []);
-
   const handleLogout = () => {
-    apiLogout();
+    if (contextLogout) {
+      contextLogout();
+    }
     onLogout?.();
   };
-
-  // Safe effective user for scoped dashboard
-  const effectiveUser = user || DEFAULT_SAMPLE_USER;
 
   return (
     <div className="worker-cockpit">
@@ -92,7 +37,7 @@ export default function WorkerDashboard({ user: initialUser, onLogout }) {
             <p>
               {isAdmin
                 ? "Manage worker users, permissions, and company scopes"
-                : `Welcome, ${effectiveUser.display_name || effectiveUser.email}`}
+                : `Welcome, ${user?.display_name || user?.email || "User"}`}
             </p>
           </div>
 
@@ -155,7 +100,7 @@ export default function WorkerDashboard({ user: initialUser, onLogout }) {
             <AdminCompanyWorkspaces />
           </>
         ) : (
-          <UserScopedDashboard user={effectiveUser} />
+          <UserScopedDashboard user={user} />
         )}
 
         {/* Modal for Admin user creation */}

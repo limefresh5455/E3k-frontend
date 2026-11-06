@@ -1,35 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PublicTabs, Icon } from "../../components";
 import WorkerDashboard from "./dashboard/WorkerDashboard";
-import {
-  login as apiLogin,
-  logout as apiLogout,
-  isAuthenticated as checkIsAuthenticated,
-  getStoredAuth,
-} from "./services";
+import { WorkerAuthProvider, useWorkerAuth } from "./context/WorkerAuthContext";
 import "../LoginPage/LoginPage.css";
 import "./WorkerDashboardAuth.css";
 
-export default function WorkerDashboardPage() {
+function WorkerDashboardContent() {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(() => checkIsAuthenticated());
-  const [user, setUser] = useState(() => getStoredAuth()?.user || null);
+  const { user, isAuthenticated, isReady, login, logout } = useWorkerAuth();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const handleLogoutEvent = () => {
-      setIsAuthenticated(false);
-      setUser(null);
-    };
-    window.addEventListener("worker-dashboard-logout", handleLogoutEvent);
-    return () => {
-      window.removeEventListener("worker-dashboard-logout", handleLogoutEvent);
-    };
-  }, []);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -37,12 +20,10 @@ export default function WorkerDashboardPage() {
     setLoading(true);
 
     try {
-      const res = await apiLogin({
+      await login({
         email: form.email,
         password: form.password,
       });
-      setUser(res?.user || null);
-      setIsAuthenticated(true);
     } catch (err) {
       setError(err.message || "Invalid email or password.");
     } finally {
@@ -50,15 +31,35 @@ export default function WorkerDashboardPage() {
     }
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
-    setForm({ email: "", password: "" });
-    setError("");
-  };
+  
+  if (!isReady) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          background: "#f4f8fb",
+        }}
+      >
+        <div
+          style={{
+            width: "36px",
+            height: "36px",
+            border: "3px solid #dfe8f1",
+            borderTopColor: "#038c99",
+            borderRadius: "50%",
+            animation: "viewSpin 0.8s linear infinite",
+          }}
+        />
+      </div>
+    );
+  }
 
-  if (isAuthenticated) {
-    return <WorkerDashboard user={user} onLogout={handleLogout} />;
+  if (isAuthenticated && user) {
+    return <WorkerDashboard onLogout={logout} />;
   }
 
   return (
@@ -122,3 +123,10 @@ export default function WorkerDashboardPage() {
   );
 }
 
+export default function WorkerDashboardPage() {
+  return (
+    <WorkerAuthProvider>
+      <WorkerDashboardContent />
+    </WorkerAuthProvider>
+  );
+}

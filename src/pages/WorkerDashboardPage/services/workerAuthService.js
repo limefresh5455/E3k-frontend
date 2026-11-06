@@ -39,6 +39,7 @@ export const isAuthenticated = () => {
 
 export const clearAuthStorage = () => {
   try {
+    invalidateWorkersCache();
     localStorage.removeItem(WORKER_TOKEN_KEY);
     localStorage.removeItem(WORKER_REFRESH_TOKEN_KEY);
     localStorage.removeItem(WORKER_AUTH_KEY);
@@ -162,13 +163,31 @@ export const getMe = async () => {
 };
 
 
-export const getWorkers = async () => {
-  try {
-    const data = await client.get("/worker-dashboard/admin/users");
-    return Array.isArray(data) ? data : data?.users || [];
-  } catch (error) {
-    throw error;
+let workersCache = null;
+let inFlightWorkersPromise = null;
+
+export const invalidateWorkersCache = () => {
+  workersCache = null;
+};
+
+export const getWorkers = async (force = false) => {
+  if (!force && workersCache) {
+    return workersCache;
   }
+  if (inFlightWorkersPromise) return inFlightWorkersPromise;
+
+  inFlightWorkersPromise = (async () => {
+    try {
+      const data = await client.get("/worker-dashboard/admin/users");
+      const result = Array.isArray(data) ? data : data?.users || [];
+      workersCache = result;
+      return result;
+    } finally {
+      inFlightWorkersPromise = null;
+    }
+  })();
+
+  return inFlightWorkersPromise;
 };
 
 
@@ -187,6 +206,7 @@ export const createWorkerUser = async ({ email, display_name, password, entitlem
 
   try {
     const data = await client.post("/worker-dashboard/admin/users", payload);
+    invalidateWorkersCache();
     return data;
   } catch (error) {
     throw error;
@@ -200,6 +220,7 @@ export const updateWorkerUser = async (userId, { display_name, entitlements }) =
       `/worker-dashboard/admin/users/${userId}`,
       { display_name, entitlements }
     );
+    invalidateWorkersCache();
     return data;
   } catch (error) {
     throw error;
@@ -213,10 +234,32 @@ export const setUserActive = async (userId, active) => {
       `/worker-dashboard/admin/users/${userId}/active`,
       { active: Boolean(active) }
     );
+    invalidateWorkersCache();
     return data;
   } catch (error) {
     throw error;
   }
+};
+
+const inFlightDataPromises = new Map();
+
+export const getWorkerDashboardData = async (audience, company) => {
+  const cacheKey = `${audience}:${company}`;
+  if (inFlightDataPromises.has(cacheKey)) {
+    return inFlightDataPromises.get(cacheKey);
+  }
+
+  const promise = (async () => {
+    try {
+      const data = await client.get(`/worker-dashboard/data/${audience}/${company}`);
+      return data?.data && data.data.audience ? data.data : data;
+    } finally {
+      inFlightDataPromises.delete(cacheKey);
+    }
+  })();
+
+  inFlightDataPromises.set(cacheKey, promise);
+  return promise;
 };
 
 export default {
@@ -224,9 +267,11 @@ export default {
   logout,
   getMe,
   getWorkers,
+  invalidateWorkersCache,
   createWorkerUser,
   updateWorkerUser,
   setUserActive,
+  getWorkerDashboardData,
   clearAuthStorage,
   getStoredAuth,
   isAuthenticated,

@@ -1,10 +1,7 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import FinanceView from "./FinanceView";
 import WorkerView from "./WorkerView";
-import teboFinanceData from "../data/tebo-finance.json";
-import teboWorkerData from "../data/tebo-workers.json";
-import ssbFinanceData from "../data/ssb-finance.json";
-import ssbWorkerData from "../data/ssb-workers.json";
+import { getWorkerDashboardData } from "../../services";
 import "./ScopedDashboard.css";
 
 const COMPANY_INFO = {
@@ -23,7 +20,7 @@ const COMPANY_INFO = {
 };
 
 export default function UserScopedDashboard({ user }) {
-  // Extract all company scopes available to this user from entitlements
+  
   const userScopes = useMemo(() => {
     const scopes = new Set();
     (user?.entitlements || []).forEach((e) => {
@@ -33,14 +30,19 @@ export default function UserScopedDashboard({ user }) {
     return Array.from(scopes);
   }, [user]);
 
-  // Default active scope
   const [activeScope, setActiveScope] = useState(() => {
     if (userScopes.includes("tebo")) return "tebo";
     if (userScopes.includes("ssb")) return "ssb";
     return userScopes[0] || "tebo";
   });
 
-  // Calculate permissions for the active scope
+  useEffect(() => {
+    if (userScopes.length > 0 && !userScopes.includes(activeScope)) {
+      setActiveScope(userScopes[0]);
+    }
+  }, [userScopes, activeScope]);
+
+
   const activeEntitlements = useMemo(() => {
     return (user?.entitlements || []).filter(
       (e) => (e.company_scope || "").toLowerCase().trim() === activeScope
@@ -59,21 +61,67 @@ export default function UserScopedDashboard({ user }) {
     );
   }, [activeEntitlements]);
 
-  // Select data according to company scope
-  const activeFinanceData = useMemo(() => {
-    return activeScope === "tebo" ? teboFinanceData : ssbFinanceData;
-  }, [activeScope]);
+  const [dataMap, setDataMap] = useState({});
+  const [loadingMap, setLoadingMap] = useState({});
+  const [errorMap, setErrorMap] = useState({});
 
-  const activeWorkerData = useMemo(() => {
-    return activeScope === "tebo" ? teboWorkerData : ssbWorkerData;
-  }, [activeScope]);
+
+  const fetchedKeysRef = useRef(new Set());
+
+  const fetchData = useCallback(async (audience, company, force = false) => {
+    const key = `${audience}:${company}`;
+    if (!force && fetchedKeysRef.current.has(key)) {
+      return;
+    }
+    fetchedKeysRef.current.add(key);
+
+    setLoadingMap((prev) => ({ ...prev, [key]: true }));
+    setErrorMap((prev) => ({ ...prev, [key]: null }));
+
+    try {
+      const data = await getWorkerDashboardData(audience, company);
+      setDataMap((prev) => ({ ...prev, [key]: data }));
+    } catch (err) {
+      console.error(`Error loading ${audience} data for ${company}:`, err);
+
+      fetchedKeysRef.current.delete(key);
+      setErrorMap((prev) => ({
+        ...prev,
+        [key]: err.message || `Failed to load ${audience} data`,
+      }));
+    } finally {
+      setLoadingMap((prev) => ({ ...prev, [key]: false }));
+    }
+  }, []);
+
+  
+  useEffect(() => {
+    if (!activeScope) return;
+
+    if (hasFinanceRead) {
+      fetchData("finance", activeScope);
+    }
+    if (hasWorkerRead) {
+      fetchData("worker", activeScope);
+    }
+  }, [activeScope, hasFinanceRead, hasWorkerRead, fetchData]);
 
   const activeCompanyName =
     COMPANY_INFO[activeScope]?.name || activeScope.toUpperCase();
 
+  const financeKey = `finance:${activeScope}`;
+  const workerKey = `worker:${activeScope}`;
+
+  const financeData = dataMap[financeKey];
+  const isFinanceLoading = Boolean(loadingMap[financeKey]) && !financeData;
+  const financeError = errorMap[financeKey];
+
+  const workerData = dataMap[workerKey];
+  const isWorkerLoading = Boolean(loadingMap[workerKey]) && !workerData;
+  const workerError = errorMap[workerKey];
+
   return (
     <div className="user-scoped-dashboard">
-  
       {userScopes.length > 1 && (
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "18px" }}>
           <div className="scope-tabs">
@@ -97,20 +145,68 @@ export default function UserScopedDashboard({ user }) {
         </div>
       )}
 
-
+      
       {hasFinanceRead && (
-        <FinanceView
-          data={activeFinanceData}
-          companyScope={activeScope}
-        />
+        <>
+          {isFinanceLoading && (
+            <div className="view-loading-state">
+              <div className="spinner"></div>
+              <p>Loading finance data for {activeCompanyName}...</p>
+            </div>
+          )}
+
+          {!isFinanceLoading && financeError && (
+            <div className="view-error-state">
+              <p className="error-msg">{financeError}</p>
+              <button
+                type="button"
+                className="retry-btn"
+                onClick={() => fetchData("finance", activeScope, true)}
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {!isFinanceLoading && !financeError && financeData && (
+            <FinanceView
+              data={financeData}
+              companyScope={activeScope}
+            />
+          )}
+        </>
       )}
 
-   
+      
       {hasWorkerRead && (
-        <WorkerView
-          data={activeWorkerData}
-          companyScope={activeScope}
-        />
+        <>
+          {isWorkerLoading && (
+            <div className="view-loading-state">
+              <div className="spinner"></div>
+              <p>Loading operations data for {activeCompanyName}...</p>
+            </div>
+          )}
+
+          {!isWorkerLoading && workerError && (
+            <div className="view-error-state">
+              <p className="error-msg">{workerError}</p>
+              <button
+                type="button"
+                className="retry-btn"
+                onClick={() => fetchData("worker", activeScope, true)}
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {!isWorkerLoading && !workerError && workerData && (
+            <WorkerView
+              data={workerData}
+              companyScope={activeScope}
+            />
+          )}
+        </>
       )}
 
       {!hasFinanceRead && !hasWorkerRead && (
@@ -141,4 +237,3 @@ export default function UserScopedDashboard({ user }) {
     </div>
   );
 }
-
